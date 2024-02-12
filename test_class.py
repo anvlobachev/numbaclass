@@ -1,11 +1,10 @@
 import numpy as np
 
-
 from numbaclass import numbaclass
 
 
 @numbaclass
-class ClassToConvert:
+class TestClass:
     def __init__(self, a):
         self.b = a
         self.prop1 = None
@@ -20,8 +19,12 @@ class ClassToConvert:
         return
 
     def method1(self):
+        """
+        More comments
+        """
+        # Some
         self.prop1[:] = 1
         print(self.prop1)
 
 
-obj = ClassToConvert(1)
+obj = TestClass(1)
