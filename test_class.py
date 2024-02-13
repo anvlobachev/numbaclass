@@ -6,25 +6,18 @@ from numbaclass import numbaclass
 @numbaclass
 class TestClass:
     def __init__(self, a):
-        self.b = a
-        self.prop1 = None
-        self.prop2 = None
-        self.prop3 = None
 
-        self.prop1 = np.zeros(10, dtype=np.float64)
-        self.prop2 = np.zeros(10, dtype=np.float64)
-        self.prop3 = np.zeros(10, dtype=np.float64)
+        self.prop1 = np.zeros(a, dtype=np.float64)
+        self.prop2 = np.zeros(a, dtype=np.float64)
 
-        print("Class Init")
-        return
-
-    def method1(self):
+    def incr_prop1(self):
         """
         More comments
         """
-        # Some
-        self.prop1[:] = 1
-        print(self.prop1)
+        self.prop1[:] += 1
 
 
-obj = TestClass(1)
+obj = TestClass(3)
+obj.incr_prop1()
+
+print(obj.prop1)
