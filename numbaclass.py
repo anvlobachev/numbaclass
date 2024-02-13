@@ -66,26 +66,21 @@ class MakeNumbaClass:
 
         for n in range(1, len(_codelines)):
 
-            line = _codelines[n]
+            line = _codelines[n].lstrip()
+
             if line == "\n":
                 continue
-
-            line = line.lstrip()
 
             if "self." in line:
                 # Don't want to instantiate class only to
                 # get instance attributes names.
                 # Retrieve them by "self." clause
-                _attr_name = line.split("self.")[1].split("=")[0].rstrip()
-
-                attrs_names_.add(_attr_name)
-
+                attrs_names_.add(line.split("self.")[1].split("=")[0].rstrip())
                 line = line.replace("self.", "")
 
             _codelines[n] = self.TAB + line
 
-        _codelines.append(" ")
-        _codelines[-1] = (
+        _codelines.append(
             self.TAB
             + f"return {self.NBPREFIX}{self.classname}({', '.join(attrs_names_)})\n"
         )
