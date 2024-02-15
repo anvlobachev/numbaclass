@@ -1,34 +1,41 @@
 import inspect
+import importlib
+
+import imp
 
 
 def numbaclass(cls):
     """
     TODO: Is to consider functools?
 
-    """
+    # TODO: Explore more on: Importing a Dynamically Generated Module
+    # TODO: Replace with importlib.util.module_from_spec (?)
 
+    """
     nbc = MakeNumbaClass()
     nbc.classname = cls.__name__
+    nbc.gen_imports(cls)
 
     for itm in inspect.getmembers(cls):
-        # print(itm)
-
         if "__init__" in itm[0]:
-            zz = nbc.construct_init(itm[1])
-            print(zz)
-
+            nbc.gen_init(itm[1])
         if "__" not in itm[0]:
-            _src = inspect.getsourcelines(itm[1])
-            _sign = inspect.signature(itm[1])
-            _argspec = inspect.getfullargspec(itm[1])
+            nbc.gen_method(itm[1])
 
-            print(itm[1].__name__)
-            print(_sign)
-            print(_argspec)
-            print(_src)
+    _nb_module_src = nbc.gen_final_module()
+
+    with open(f"{nbc.get_module_name}.py", "w") as file:
+        file.write(_nb_module_src)
+        print("Numbaclass module saved: ", nbc.get_module_name)
+
+    _nb_module_code = compile(_nb_module_src, nbc.get_module_name, "exec")
+    _numbaclass = imp.new_module(nbc.get_module_name)
+
+    exec(_nb_module_code, _numbaclass.__dict__)
+    _tocall = getattr(_numbaclass, nbc.classname)
 
     def wrapper(*args, **kwargs):
-        return cls(*args, **kwargs)
+        return _tocall(*args, **kwargs)
 
     return wrapper
 
@@ -45,52 +52,73 @@ class MakeNumbaClass:
         self.attrs_names_ = set()
         self.methods_names_ = set()
 
-    def construct_init(self, src):
+        self.get_module_name = ""
+
+        self.get_imports = ""
+        self.get_init_code = ""
+        self.get_methods_code_ = []
+
+    def gen_imports(self, src):
+        src_module = inspect.getmodule(src)
+        lines_ = inspect.getsourcelines(src_module)[0]
+
+        for line in lines_:
+            if "@numbaclass" in line:
+                break
+            self.get_imports += line
+
+    def gen_init(self, src):
         """
         Takes class __init__ method source code as argument.
         Creates function which inits inputs and
         returns Numba StructRef object.
         """
-
-        attrs_names_ = self.attrs_names_
-        init_args_names_ = self.init_args_names_
-
-        init_args_names_ = set(
-            inspect.getfullargspec(src).args[1:]
-        )  # Don't include 'self' argument
-
+        #  Don't include 'self' argument, skip first item [1:]
+        self.init_args_names_ = set(inspect.getfullargspec(src).args[1:])
         # getsourcelines docs: Return a list of source lines and starting line number for an object.
         _codelines = inspect.getsourcelines(src)[0]  # We need only lines of code
-
-        _codelines[0] = f"def {self.classname}({', '.join(init_args_names_)}):\n"
+        _codelines[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
 
         for n in range(1, len(_codelines)):
-
-            line = _codelines[n].lstrip()
-
-            if line == "\n":
-                continue
-
+            line = _codelines[n]
+            if line.startswith(self.TAB):
+                line = line[len(self.TAB) :]
+            # Retrieve attr instance names by "self." clause
             if "self." in line:
-                # Don't want to instantiate class only to
-                # get instance attributes names.
-                # Retrieve them by "self." clause
-                attrs_names_.add(line.split("self.")[1].split("=")[0].rstrip())
+                self.attrs_names_.add(line.split("self.")[1].split("=")[0].rstrip())
                 line = line.replace("self.", "")
 
-            _codelines[n] = self.TAB + line
+            _codelines[n] = line
 
-        _codelines.append(
-            self.TAB
-            + f"return {self.NBPREFIX}{self.classname}({', '.join(attrs_names_)})\n"
-        )
+        # _codelines.append(
+        #     self.TAB
+        #     + f"return {self.NBPREFIX}{self.classname}({', '.join(self.attrs_names_)})\n"
+        # )
+        _codelines.append(self.TAB + f"return 'Some output'\n")
 
-        return "".join(_codelines)
+        self.get_init_code = "".join(_codelines)
 
-    def construct_method(self, src):
+        self.get_module_name = self.classname.lower() + "nb"
+
+    def gen_method(self, src):
         """
         Takes custom method source code and
         generates Numba aware wrappers
         """
+        lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
 
-        return
+        for n in range(0, len(lines_)):
+
+            if lines_[n].startswith(self.TAB):
+                lines_[n] = lines_[n][len(self.TAB) :]
+
+        self.get_methods_code_.append("".join(lines_))
+
+    def gen_final_module(self):
+
+        _out = ""
+
+        _out += self.get_imports
+        _out += self.get_init_code
+
+        return _out
