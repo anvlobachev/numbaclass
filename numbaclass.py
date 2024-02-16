@@ -42,7 +42,7 @@ def numbaclass(cls):
     exec(_nb_module_code, _numbaclass.__dict__)
     _tocall = getattr(_numbaclass, nbc.classname)
 
-    print(nbc.methods_parts_)
+    # print(nbc.methods_parts_)
 
     def wrapper(*args, **kwargs):
         return _tocall(*args, **kwargs)

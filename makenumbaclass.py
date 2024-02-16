@@ -97,7 +97,7 @@ class {self.classname}{self.NBPREFIX}(structref.StructRefProxy):
         )\n"""
         return _out
 
-    def _gen_proprties(self):
+    def _gen_properties(self):
         _out = ""
         for name in self.attrs_names_:
             _out += f"""
@@ -152,7 +152,7 @@ def get__{name}(self):
         _out += self.get_init_code
 
         _out += self._gen__new__()
-        _out += self._gen_proprties()
+        _out += self._gen_properties()
         _out += self._gen_methods_defs()
         _out += self._gen_jit_properties()
 
