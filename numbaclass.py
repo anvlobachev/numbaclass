@@ -17,15 +17,15 @@ def numbaclass(cls):
     """
     nbc = MakeNumbaClass()
     nbc.classname = cls.__name__
-    nbc.gen_imports(cls)
+    nbc._gen_imports(cls)
 
     for itm in inspect.getmembers(cls):
         if "__init__" in itm[0]:
-            nbc.gen_init(itm[1])
+            nbc._gen_init(itm[1])
         if "__" not in itm[0]:
-            nbc.gen_method(itm[1])
+            nbc._gen_method(itm[1])
 
-    _nb_module_src = nbc.gen_final_module()
+    _nb_module_src = nbc._gen_final_module()
 
     # Construct filepath for generated module
     _absfile = inspect.getabsfile(cls)

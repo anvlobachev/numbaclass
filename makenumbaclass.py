@@ -2,16 +2,29 @@ import inspect
 
 
 class MakeNumbaClass:
+    """
+    class IndicatorAtr(structref.StructRefProxy):
+    def __new__(
+        cls,
+        arg1,
+    ):
+        return structref.StructRefProxy.__new__(
+            cls,
+            arg1,
+        )
 
-    NBPREFIX = "NB_"
+
+    """
+
+    NBPREFIX = "NB"
     TAB = "    "
 
     def __init__(self):
 
         self.classname = None
-        self.init_args_names_ = set()
-        self.attrs_names_ = set()
-        self.methods_names_ = set()
+        self.init_args_names_ = []
+        self.attrs_names_ = []
+        self.methods_names_ = []
 
         self.get_module_name = ""
 
@@ -19,23 +32,27 @@ class MakeNumbaClass:
         self.get_init_code = ""
         self.get_methods_code_ = []
 
-    def gen_imports(self, src):
+    def _gen_imports(self, src):
         src_module = inspect.getmodule(src)
         lines_ = inspect.getsourcelines(src_module)[0]
 
         for line in lines_:
-            if "@numbaclass" in line:
+            if "@numbaclass" in line and not line.lstrip().startswith("#"):
                 break
             self.get_imports += line
 
-    def gen_init(self, src):
+        self.get_imports += "from numba import njit\n"
+        self.get_imports += "from numba.experimental import structref\n"
+        self.get_imports += "\n"
+
+    def _gen_init(self, src):
         """
         Takes class __init__ method source code as argument.
         Creates function which inits inputs and
         returns Numba StructRef object.
         """
         #  Don't include 'self' argument, skip first item [1:]
-        self.init_args_names_ = set(inspect.getfullargspec(src).args[1:])
+        self.init_args_names_ = list(inspect.getfullargspec(src).args[1:])
         # getsourcelines docs: Return a list of source lines and starting line number for an object.
         _codelines = inspect.getsourcelines(src)[0]  # We need only lines of code
         _codelines[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
@@ -45,8 +62,10 @@ class MakeNumbaClass:
             if line.startswith(self.TAB):
                 line = line[len(self.TAB) :]
             # Retrieve attr instance names by "self." clause
-            if "self." in line:
-                self.attrs_names_.add(line.split("self.")[1].split("=")[0].rstrip())
+            if "self." in line and not line.lstrip().startswith("#"):
+                _name = line.split("self.")[1].split("=")[0].rstrip()
+                if _name not in self.attrs_names_:
+                    self.attrs_names_.append(_name)
                 line = line.replace("self.", "")
 
             _codelines[n] = line
@@ -58,10 +77,27 @@ class MakeNumbaClass:
         _codelines.append(self.TAB + f"return 'Some output'\n")
 
         self.get_init_code = "".join(_codelines)
-
         self.get_module_name = self.classname.lower() + "_nb"
 
-    def gen_method(self, src):
+    def _gen__new__(self):
+
+        _args1 = ",\n".join([f"\t\t{name}" for name in self.attrs_names_])
+        _args2 = ",\n".join([f"\t\t\t{name}" for name in self.attrs_names_])
+
+        _out = f"""
+class {self.classname}{self.NBPREFIX}(structref.StructRefProxy):
+    def __new__(
+        cls,
+{_args1}
+    ):
+        return structref.StructRefProxy.__new__(
+            cls,
+{_args2}
+        )\n
+"""
+        return _out
+
+    def _gen_method(self, src):
         """
         Takes custom method source code and
         generates Numba aware wrappers
@@ -75,11 +111,13 @@ class MakeNumbaClass:
 
         self.get_methods_code_.append("".join(lines_))
 
-    def gen_final_module(self):
+    def _gen_final_module(self):
 
         _out = ""
 
         _out += self.get_imports
         _out += self.get_init_code
+
+        _out += self._gen__new__()
 
         return _out
