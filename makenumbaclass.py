@@ -21,10 +21,13 @@ class MakeNumbaClass:
 
     def __init__(self):
 
+        self.cache = False
+
         self.classname = None
         self.init_args_names_ = []
         self.attrs_names_ = []
-        self.methods_names_ = []
+
+        self.methods_parts_ = []
 
         self.get_module_name = ""
 
@@ -87,29 +90,59 @@ class MakeNumbaClass:
         _out = f"""
 class {self.classname}{self.NBPREFIX}(structref.StructRefProxy):
     def __new__(
-        cls,
-{_args1}
+        cls,\n{_args1}
     ):
         return structref.StructRefProxy.__new__(
-            cls,
-{_args2}
-        )\n
-"""
+            cls,\n{_args2}
+        )\n"""
         return _out
 
-    def _gen_method(self, src):
+    def _gen_proprties(self):
+        _out = ""
+        for name in self.attrs_names_:
+            _out += f"""
+    @property
+    def {name}(self):
+        return get__{name}(self)\n"""
+        return _out
+
+    def _gen_jit_properties(self):
+        _out = ""
+        for name in self.attrs_names_:
+            _out += f"""
+@njit(cache={self.cache})
+def get__{name}(self):
+    return self.{name}\n"""
+        return _out
+
+    def _parse_method(self, src):
         """
-        Takes custom method source code and
-        generates Numba aware wrappers
+        Collect methods parts for latter use
         """
+        _parts = {"name": "", "args": [], "code": []}
+
+        _parts["name"] = src.__name__
+        _parts["args"] = list(inspect.getfullargspec(src).args)
+
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
 
         for n in range(0, len(lines_)):
-
-            if lines_[n].startswith(self.TAB):
+            if lines_[n].startswith("    "):
                 lines_[n] = lines_[n][len(self.TAB) :]
+        _parts["code"] = lines_[1:]
 
-        self.get_methods_code_.append("".join(lines_))
+        self.methods_parts_.append(_parts)
+
+    def _gen_methods_defs(self):
+        _out = ""
+
+        for _parts in self.methods_parts_:
+            _args = ", ".join(_parts["args"])
+            name = _parts["name"]
+            _out += f"""
+    def {name}({_args}):
+        return invoke__{name}({_args})\n"""
+        return _out
 
     def _gen_final_module(self):
 
@@ -119,5 +152,10 @@ class {self.classname}{self.NBPREFIX}(structref.StructRefProxy):
         _out += self.get_init_code
 
         _out += self._gen__new__()
+        _out += self._gen_proprties()
+        _out += self._gen_methods_defs()
+        _out += self._gen_jit_properties()
+
+        # TODO: Add here _gen_jit_methods_defs()
 
         return _out

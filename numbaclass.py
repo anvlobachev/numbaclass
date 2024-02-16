@@ -23,7 +23,7 @@ def numbaclass(cls):
         if "__init__" in itm[0]:
             nbc._gen_init(itm[1])
         if "__" not in itm[0]:
-            nbc._gen_method(itm[1])
+            nbc._parse_method(itm[1])
 
     _nb_module_src = nbc._gen_final_module()
 
@@ -41,6 +41,8 @@ def numbaclass(cls):
 
     exec(_nb_module_code, _numbaclass.__dict__)
     _tocall = getattr(_numbaclass, nbc.classname)
+
+    print(nbc.methods_parts_)
 
     def wrapper(*args, **kwargs):
         return _tocall(*args, **kwargs)
