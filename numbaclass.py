@@ -1,6 +1,8 @@
 import inspect
 import importlib
 
+import os
+
 import imp
 from makenumbaclass import MakeNumbaClass
 
@@ -25,7 +27,12 @@ def numbaclass(cls):
 
     _nb_module_src = nbc.gen_final_module()
 
-    with open(f"{nbc.get_module_name}.py", "w") as file:
+    # Construct filepath for generated module
+    _absfile = inspect.getabsfile(cls)
+    _absdir = os.path.split(_absfile)[0]
+    _newabsfile = os.path.join(_absdir, f"{nbc.get_module_name}.py")
+
+    with open(_newabsfile, "w") as file:
         file.write(_nb_module_src)
         print("Numbaclass module saved: ", nbc.get_module_name)
 

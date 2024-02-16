@@ -59,7 +59,7 @@ class MakeNumbaClass:
 
         self.get_init_code = "".join(_codelines)
 
-        self.get_module_name = self.classname.lower() + "nb"
+        self.get_module_name = self.classname.lower() + "_nb"
 
     def gen_method(self, src):
         """
