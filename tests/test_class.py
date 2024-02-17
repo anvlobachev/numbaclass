@@ -4,14 +4,14 @@ from numbaclass import numbaclass
 
 
 @numbaclass
-class TestClass:
-    def __init__(self, a):
+class TestExample:
+    def __init__(self, n):
         """
         Init routines
         """
 
-        self.prop1 = np.zeros(a, dtype=np.float64)
-        self.prop2 = np.zeros(a, dtype=np.float64)
+        self.prop1 = np.zeros(n, dtype=np.float64)
+        self.prop2 = np.zeros(n, dtype=np.float64)
         print("Init done")
 
     def incr_prop1(self):
@@ -25,7 +25,7 @@ class TestClass:
         return "Me checked"
 
 
-obj = TestClass(3)
+obj = TestExample(3)
 # obj.incr_prop1()
 
 print(obj)
