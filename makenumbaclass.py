@@ -46,6 +46,9 @@ class MakeNumbaClass:
 
         self.get_imports += "from numba import njit\n"
         self.get_imports += "from numba.experimental import structref\n"
+        self.get_imports += (
+            "from numba.core.extending import overload_method, register_jitable\n"
+        )
         self.get_imports += "\n"
 
     def _gen_init(self, src):
@@ -144,6 +147,22 @@ def get__{name}(self):
         return invoke__{name}({_args})\n"""
         return _out
 
+    def _gen_jit_methods_defs(self):
+        _out = ""
+        for _parts in self.methods_parts_:
+            _args = ", ".join(_parts["args"])
+            name = _parts["name"]
+            _out += f"""
+@njit(cache={self.cache})
+def invoke__{name}({_args}):
+    return the__{name}({_args})
+
+@register_jitable
+def the__{name}({_args}):
+{"".join(_parts["code"])}\n"""
+
+        return _out
+
     def _gen_final_module(self):
 
         _out = ""
@@ -155,7 +174,6 @@ def get__{name}(self):
         _out += self._gen_properties()
         _out += self._gen_methods_defs()
         _out += self._gen_jit_properties()
-
-        # TODO: Add here _gen_jit_methods_defs()
+        _out += self._gen_jit_methods_defs()
 
         return _out
