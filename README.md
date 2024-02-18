@@ -1,9 +1,7 @@
-# numbaclass
+## numbaclass
 
-Allows python class to be compiled with Numba.\
-Converted class can be used inside other jitted or non-jitted functions simultaneously.
-
-### Use @numbaclass decorator
+Add @numbaclass decorator to the class defined in Python to compile it with Numba.\
+Decorated class will work inside other jitted or non-jitted functions.
 
 ```python
 import numpy as np
@@ -20,25 +18,7 @@ class TestExample:
             pass
 ```
 
-### Installation
-
-```bash
-pip install numbaclass
-```
-
-### Use Guides
-
-* Inside \_\_init\_\_() define attributes, prepare and process data in a regular python way, use any libraries.
-* Other dunder methods will be ignored, don't override.
-* Class methods must use Numba compatibe routines.
-  * tip 1
-  * tip 2
-
-\Consider also:
-
-### How it works
-
-Under the hood decorator rewrites class to Numba StructRef object.
+Because @numbaclass relies on Numba StructRef feature, the above example, under the hood, will be converted to this:
 
 ```python
 import numpy as np
@@ -53,3 +33,29 @@ def TestExampleNB(n):
 
 # TODO: Inclue full result
 ```
+
+A lot of wrappers and boilerplate code, which @numbaclass helping to avoid.
+
+## Use Guides
+
+* Inside \_\_init\_\_() define attributes, prepare and process data in a regular python way, use any libraries.
+* Other dunder methods will be ignored, don't override.
+* Class methods must use Numba compatibe routines.
+  * tip 1
+  * tip 2
+
+## Installation
+
+```bash
+pip install numbaclass
+```
+
+## Configure details
+
+Disable conversion globally via Environment variable.
+
+Write out intermediate StructRef output to file with flag:
+@numbaclass(write=True)
+
+Cache flag, one for conversion and jitted code.
+@numbaclass(cache=True)
