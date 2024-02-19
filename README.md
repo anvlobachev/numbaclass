@@ -1,6 +1,6 @@
 ## Numbaclass
 
-Add @numbaclass decorator to Python class, to compile it with Numba using StructRef feature.\
+Add @numbaclass decorator to Python class, to compile it with Numba, using StructRef feature.\
 Decorated class will work inside other jitted or non-jitted functions.
 
 ```python
