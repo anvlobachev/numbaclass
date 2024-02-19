@@ -54,6 +54,7 @@ class MakeNumbaClass:
             self.get_imports += line
 
         self.get_imports += "from numba import njit\n"
+        self.get_imports += "from numba.core import types\n"
         self.get_imports += "from numba.experimental import structref\n"
         self.get_imports += (
             "from numba.core.extending import overload_method, register_jitable\n"
@@ -172,6 +173,29 @@ def the__{name}({_args}):
 
         return _out
 
+    def _gen_preprocess_fields(self):
+
+        _out = f"""
+@structref.register
+class {self.structrefname}Type(types.StructRef):
+    def preprocess_fields(self, fields):
+        return tuple((name, types.unliteral(typ)) for name, typ in fields)\n"""
+
+        return _out
+
+    def _gen_define_proxy(self):
+        _args = ",\n".join([f'\t"{name}"' for name in self.attrs_names_])
+
+        _out = f"""
+structref.define_proxy(
+    {self.structrefname},
+    {self.structrefname}Type,
+    [
+{_args}
+    ],
+)"""
+        return _out
+
     def _gen_final_module(self):
 
         _out = ""
@@ -184,5 +208,7 @@ def the__{name}({_args}):
         _out += self._gen_methods_defs()
         _out += self._gen_jit_properties()
         _out += self._gen_jit_methods_defs()
+        _out += self._gen_preprocess_fields()
+        _out += self._gen_define_proxy()
 
         return _out
