@@ -1,4 +1,4 @@
-## numbaclass
+## Numbaclass
 
 Add @numbaclass decorator to the class defined in Python to compile it with Numba.\
 Decorated class will work inside other jitted or non-jitted functions.
@@ -34,7 +34,7 @@ def TestExampleNB(n):
 # TODO: Inclue full result
 ```
 
-A lot of wrappers and boilerplate code, which @numbaclass helping to avoid.
+A lot of wrappers and boilerplate code, which @numbaclass helps to avoid.
 
 ## Use Guides
 
