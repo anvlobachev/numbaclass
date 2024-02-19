@@ -19,11 +19,12 @@ class MakeNumbaClass:
     NBPREFIX = "NB"
     TAB = "    "
 
-    def __init__(self):
+    def __init__(self, cls):
 
         self.cache = False
 
-        self.classname = None
+        self.classname = cls.__name__
+        self.structrefname = cls.__name__ + "NB"
         self.init_args_names_ = []
         self.attrs_names_ = []
 
@@ -34,6 +35,14 @@ class MakeNumbaClass:
         self.get_imports = ""
         self.get_init_code = ""
         self.get_methods_code_ = []
+
+        self._gen_imports(cls)
+
+        for itm in inspect.getmembers(cls):
+            if "__init__" in itm[0]:
+                self._gen_init(itm[1])
+            if "__" not in itm[0]:
+                self._parse_method(itm[1])
 
     def _gen_imports(self, src):
         src_module = inspect.getmodule(src)

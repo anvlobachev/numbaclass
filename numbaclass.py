@@ -15,15 +15,7 @@ def numbaclass(cls):
     # TODO: Replace with importlib.util.module_from_spec (?)
 
     """
-    nbc = MakeNumbaClass()
-    nbc.classname = cls.__name__
-    nbc._gen_imports(cls)
-
-    for itm in inspect.getmembers(cls):
-        if "__init__" in itm[0]:
-            nbc._gen_init(itm[1])
-        if "__" not in itm[0]:
-            nbc._parse_method(itm[1])
+    nbc = MakeNumbaClass(cls)
 
     _nb_module_src = nbc._gen_final_module()
 
