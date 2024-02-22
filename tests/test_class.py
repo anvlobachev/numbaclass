@@ -21,11 +21,12 @@ class TestExample:
         self.prop1[:] += 1
 
     def check_me(self):
-        # print("Me checked")
-        return "Me checked"
+        print(self.prop1)
 
 
 obj = TestExample(3)
-# obj.incr_prop1()
+obj.incr_prop1()
+obj.check_me()
+
 
 print(obj)
