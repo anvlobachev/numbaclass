@@ -9,10 +9,9 @@ from makenumbaclass import MakeNumbaClass
 
 def numbaclass(cls):
     """
-    TODO: Is to consider functools?
-
-    # TODO: Explore more on: Importing a Dynamically Generated Module
-    # TODO: Replace with importlib.util.module_from_spec (?)
+    TODO: Consider functools?
+    TODO: Explore more on: Importing a Dynamically Generated Module
+    TODO: Replace with importlib.util.module_from_spec (?)
 
     """
     nbc = MakeNumbaClass(cls)
