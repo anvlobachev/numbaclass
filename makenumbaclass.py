@@ -70,11 +70,11 @@ class MakeNumbaClass:
         #  Don't include 'self' argument, skip first item [1:]
         self.init_args_names_ = list(inspect.getfullargspec(src).args[1:])
         # getsourcelines docs: Return a list of source lines and starting line number for an object.
-        _codelines = inspect.getsourcelines(src)[0]  # We need only lines of code
-        _codelines[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
+        lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
+        lines_[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
 
-        for n in range(1, len(_codelines)):
-            line = _codelines[n]
+        for n in range(1, len(lines_)):
+            line = lines_[n]
             if line.startswith(self.TAB):
                 line = line[len(self.TAB) :]
             # Retrieve attr instance names by "self." clause
@@ -84,15 +84,13 @@ class MakeNumbaClass:
                     self.attrs_names_.append(_name)
                 line = line.replace("self.", "")
 
-            _codelines[n] = line
+            lines_[n] = line
 
-        # _codelines.append(
-        #     self.TAB
-        #     + f"return {self.NBPREFIX}{self.classname}({', '.join(self.attrs_names_)})\n"
-        # )
-        _codelines.append(self.TAB + f"return 'Some output'\n")
+        lines_.append(
+            self.TAB + f"return {self.structrefname}({', '.join(self.attrs_names_)})\n"
+        )
 
-        self.get_init_code = "".join(_codelines)
+        self.get_init_code = "".join(lines_)
         self.get_module_name = self.classname.lower() + "_nb"
 
     def _gen__new__(self):
@@ -193,8 +191,21 @@ structref.define_proxy(
     [
 {_args}
     ],
-)"""
+)\n"""
         return _out
+
+    def _gen_overload_methods(self):
+        methods_ = []
+        for _parts in self.methods_parts_:
+            name = _parts["name"]
+            _args = ", ".join(_parts["args"])
+            _meth = f"""
+@overload_method({self.structrefname}Type, "{name}", fastmath=False)
+def ol__{name}({_args}):
+    return the__{name}"""
+            methods_.append(_meth)
+
+        return "\n".join(methods_)
 
     def _gen_final_module(self):
 
@@ -210,5 +221,6 @@ structref.define_proxy(
         _out += self._gen_jit_methods_defs()
         _out += self._gen_preprocess_fields()
         _out += self._gen_define_proxy()
+        _out += self._gen_overload_methods()
 
         return _out
