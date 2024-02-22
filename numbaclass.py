@@ -18,14 +18,16 @@ def numbaclass(cls):
 
     _nb_module_src = nbc._gen_final_module()
 
-    # Construct filepath for generated module
-    _absfile = inspect.getabsfile(cls)
-    _absdir = os.path.split(_absfile)[0]
-    _newabsfile = os.path.join(_absdir, f"{nbc.get_module_name}.py")
+    writeout = True
+    if writeout:
+        # Construct filepath for generated module
+        _absfile = inspect.getabsfile(cls)
+        _absdir = os.path.split(_absfile)[0]
+        _newabsfile = os.path.join(_absdir, f"{nbc.get_module_name}.py")
 
-    with open(_newabsfile, "w") as file:
-        file.write(_nb_module_src)
-        print("Numbaclass module saved: ", nbc.get_module_name)
+        with open(_newabsfile, "w") as file:
+            file.write(_nb_module_src)
+            print("Numbaclass module saved: ", nbc.get_module_name)
 
     _nb_module_code = compile(_nb_module_src, nbc.get_module_name, "exec")
     _numbaclass = imp.new_module(nbc.get_module_name)
