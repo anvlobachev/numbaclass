@@ -15,6 +15,10 @@ def numbaclass(_cls=None, cache=None, writeout=None):
       @numbaclass decorator and
       @njit(cache=...) flag inside generated StructRef
 
+    TODO: Issue with matching __init__ arguments and instance attrnames
+
+    TODO: Decide on postfix in name of converted class, TestExampleNB
+
     TODO: Check if cached_MakeNumbaClass(cls) is using cache
     TODO: Replace imp with importlib.util.module_from_spec (?)
 
