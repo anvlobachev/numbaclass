@@ -7,37 +7,45 @@ import imp
 from makenumbaclass import MakeNumbaClass
 
 
-def numbaclass(cls):
+def numbaclass(_cls=None, cache=None):
     """
     TODO: Consider functools?
     TODO: Explore more on: Importing a Dynamically Generated Module
     TODO: Replace with importlib.util.module_from_spec (?)
 
     """
-    nbc = MakeNumbaClass(cls)
 
-    _nb_module_src = nbc._gen_final_module()
+    def deco(cls):
 
-    writeout = True
-    if writeout:
-        # Construct filepath for generated module
-        _absfile = inspect.getabsfile(cls)
-        _absdir = os.path.split(_absfile)[0]
-        _newabsfile = os.path.join(_absdir, f"{nbc.get_module_name}.py")
+        nbc = MakeNumbaClass(cls)
 
-        with open(_newabsfile, "w") as file:
-            file.write(_nb_module_src)
-            print("Numbaclass module saved: ", nbc.get_module_name)
+        _nb_module_src = nbc._gen_final_module()
 
-    _nb_module_code = compile(_nb_module_src, nbc.get_module_name, "exec")
-    _numbaclass = imp.new_module(nbc.get_module_name)
+        writeout = True
+        if writeout:
+            # Construct filepath for generated module
+            _absfile = inspect.getabsfile(cls)
+            _absdir = os.path.split(_absfile)[0]
+            _newabsfile = os.path.join(_absdir, f"{nbc.get_module_name}.py")
 
-    exec(_nb_module_code, _numbaclass.__dict__)
-    _tocall = getattr(_numbaclass, nbc.classname)
+            with open(_newabsfile, "w") as file:
+                file.write(_nb_module_src)
+                print("Numbaclass module saved: ", nbc.get_module_name)
 
-    # print(nbc.methods_parts_)
+        _nb_module_code = compile(_nb_module_src, nbc.get_module_name, "exec")
+        _numbaclass = imp.new_module(nbc.get_module_name)
 
-    def wrapper(*args, **kwargs):
-        return _tocall(*args, **kwargs)
+        exec(_nb_module_code, _numbaclass.__dict__)
+        _tocall = getattr(_numbaclass, nbc.classname)
 
-    return wrapper
+        # print(nbc.methods_parts_)
+
+        def _initcall(*args, **kwargs):
+            return _tocall(*args, **kwargs)
+
+        return _initcall
+
+    if _cls is None:
+        return deco
+    else:
+        return deco(_cls)

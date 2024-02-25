@@ -1,9 +1,10 @@
 import numpy as np
 
+# from numbaclass import numbaclass
 from numbaclass import numbaclass
 
 
-@numbaclass
+@numbaclass()
 class TestExample:
     def __init__(self, n):
         """
@@ -25,6 +26,7 @@ class TestExample:
 
 
 obj = TestExample(3)
+obj.incr_prop1()
 obj.incr_prop1()
 obj.check_me()
 
