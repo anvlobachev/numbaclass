@@ -44,6 +44,8 @@ class MakeNumbaClass:
             if "__" not in itm[0]:
                 self._parse_method(itm[1])
 
+        self.get_nb_module = self._gen_final_module()
+
     def _gen_imports(self, src):
         src_module = inspect.getmodule(src)
         lines_ = inspect.getsourcelines(src_module)[0]
