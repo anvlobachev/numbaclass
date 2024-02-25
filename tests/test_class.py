@@ -1,10 +1,8 @@
+from numbaclass import numbaclass
 import numpy as np
 
-# from numbaclass import numbaclass
-from numbaclass import numbaclass
 
-
-@numbaclass()
+@numbaclass(writeout=True)
 class TestExample:
     def __init__(self, n):
         """
