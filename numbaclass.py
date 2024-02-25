@@ -1,4 +1,6 @@
 import inspect
+import functools
+
 import importlib
 
 import os
@@ -7,21 +9,38 @@ import imp
 from makenumbaclass import MakeNumbaClass
 
 
-def numbaclass(_cls=None, cache=None):
+def numbaclass(_cls=None, cache=None, writeout=None):
     """
-    TODO: Consider functools?
+    cache flag for both:
+      @numbaclass decorator and
+      @njit(cache=...) flag inside generated StructRef
+
+    TODO: Check if cached_MakeNumbaClass(cls) is using cache
+    TODO: Replace imp with importlib.util.module_from_spec (?)
+
     TODO: Explore more on: Importing a Dynamically Generated Module
-    TODO: Replace with importlib.util.module_from_spec (?)
 
     """
+    # Set defaults flags
+    if cache is None:
+        cache = True
+    if writeout is None:
+        writeout = False
+
+    @functools.lru_cache(maxsize=32)
+    def cached_MakeNumbaClass(cls):
+        return MakeNumbaClass(cls)
 
     def deco(cls):
 
-        nbc = MakeNumbaClass(cls)
+        if cache:
+            nbc = cached_MakeNumbaClass(cls)
+        else:
+            nbc = MakeNumbaClass(cls)
 
-        _nb_module_src = nbc._gen_final_module()
+        # _nb_module_src = nbc._gen_final_module()
+        _nb_module_src = nbc.get_nb_module
 
-        writeout = True
         if writeout:
             # Construct filepath for generated module
             _absfile = inspect.getabsfile(cls)
