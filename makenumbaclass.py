@@ -63,6 +63,18 @@ class MakeNumbaClass:
         )
         self.get_imports += "\n"
 
+    def _remove_definition(self, lines_):
+        """
+        Removes single lined defintion and
+        definitions on several lines with long and/or many arguments
+        """
+        for line in lines_[:]:
+            if ":" in line:
+                lines_.remove(line)
+                break
+            else:
+                lines_.remove(line)
+
     def _gen_init(self, src):
         """
         Takes class __init__ method source code as argument.
@@ -72,10 +84,23 @@ class MakeNumbaClass:
         #  Don't include 'self' argument, skip first item [1:]
         self.init_args_names_ = list(inspect.getfullargspec(src).args[1:])
         # getsourcelines docs: Return a list of source lines and starting line number for an object.
-        lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
-        lines_[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
 
-        for n in range(1, len(lines_)):
+        lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
+        self._remove_definition(lines_)
+
+        print("-----------------------------------------------------------------")
+        print("lines_ :")
+        print(lines_)
+
+        print("-----------------------------------------------------------------")
+
+        def_line = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
+        # lines_[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
+
+        new_lines = []
+        new_lines.append(def_line)
+
+        for n in range(0, len(lines_)):
             line = lines_[n]
             if line.startswith(self.TAB):
                 line = line[len(self.TAB) :]
@@ -86,13 +111,14 @@ class MakeNumbaClass:
                     self.attrs_names_.append(_name)
                 line = line.replace("self.", "")
 
-            lines_[n] = line
+            new_lines.append(line)
+            # lines_[n] = line
 
-        lines_.append(
+        new_lines.append(
             self.TAB + f"return {self.structrefname}({', '.join(self.attrs_names_)})\n"
         )
 
-        self.get_init_code = "".join(lines_)
+        self.get_init_code = "".join(new_lines)
         self.get_module_name = self.classname.lower() + "_nb"
 
     def _gen__new__(self):
