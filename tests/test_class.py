@@ -2,11 +2,13 @@ from numbaclass import numbaclass
 import numpy as np
 
 
-@numbaclass(writeout=True)
+@numbaclass(cache=False, writeout=True)
 class TestExample:
-    def __init__(self, n):
+    def __init__(
+        self, n, alfa, beta, gamma, theta, sigma, omega, meta, nano, zeta, cardano, more
+    ):
         """
-        Init routines
+        Init routines2
         """
 
         self.prop1 = np.zeros(n, dtype=np.float64)
@@ -23,7 +25,7 @@ class TestExample:
         print(self.prop1)
 
 
-obj = TestExample(3)
+obj = TestExample(4)
 obj.incr_prop1()
 obj.incr_prop1()
 obj.check_me()
