@@ -15,6 +15,8 @@ def numbaclass(_cls=None, cache=None, writeout=None):
       @numbaclass decorator and
       @njit(cache=...) flag inside generated StructRef
 
+    TODO: getsourcelines is NOT correct for parsing
+
     TODO: Issue with matching __init__ arguments and instance attrnames
 
     TODO: Decide on postfix in name of converted class, TestExampleNB
