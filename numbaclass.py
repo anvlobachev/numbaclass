@@ -15,7 +15,6 @@ def numbaclass(_cls=None, cache=None, writeout=None):
       @numbaclass decorator and
       @njit(cache=...) flag inside generated StructRef
 
-    TODO: getsourcelines is NOT correct for parsing
 
     TODO: Issue with matching __init__ arguments and instance attrnames
 
@@ -40,30 +39,28 @@ def numbaclass(_cls=None, cache=None, writeout=None):
     def deco(cls):
 
         if cache:
+            print("Get cached output")
             nbc = cached_MakeNumbaClass(cls)
         else:
+            print("Generate new output")
             nbc = MakeNumbaClass(cls)
-
-        # _nb_module_src = nbc._gen_final_module()
-        _nb_module_src = nbc.get_nb_module
 
         if writeout:
             # Construct filepath for generated module
             _absfile = inspect.getabsfile(cls)
-            _absdir = os.path.split(_absfile)[0]
-            _newabsfile = os.path.join(_absdir, f"{nbc.get_module_name}.py")
+            _newabsfile = os.path.join(
+                os.path.split(_absfile)[0], f"{nbc.get_module_name}.py"
+            )
 
             with open(_newabsfile, "w") as file:
-                file.write(_nb_module_src)
+                file.write(nbc.get_nb_module)
                 print("Numbaclass module saved: ", nbc.get_module_name)
 
-        _nb_module_code = compile(_nb_module_src, nbc.get_module_name, "exec")
+        _nb_module_code = compile(nbc.get_nb_module, nbc.get_module_name, "exec")
         _numbaclass = imp.new_module(nbc.get_module_name)
 
         exec(_nb_module_code, _numbaclass.__dict__)
         _tocall = getattr(_numbaclass, nbc.classname)
-
-        # print(nbc.methods_parts_)
 
         def _initcall(*args, **kwargs):
             return _tocall(*args, **kwargs)
