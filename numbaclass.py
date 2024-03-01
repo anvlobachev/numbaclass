@@ -16,11 +16,13 @@ def numbaclass(_cls=None, cache=None, writeout=None):
       @njit(cache=...) flag inside generated StructRef
 
 
+    TODO: Implement cache
+    # https://numba.discourse.group/t/hacking-numba-cache-dir-and-userprovidedcachelocator-to-package-jit-cache-in-egg/895/3
+
     TODO: Issue with matching __init__ arguments and instance attrnames
 
     TODO: Decide on postfix in name of converted class, TestExampleNB
 
-    TODO: Check if cached_MakeNumbaClass(cls) is using cache
     TODO: Replace imp with importlib.util.module_from_spec (?)
 
     TODO: Explore more on: Importing a Dynamically Generated Module
@@ -33,17 +35,36 @@ def numbaclass(_cls=None, cache=None, writeout=None):
         writeout = False
 
     @functools.lru_cache(maxsize=32)
-    def cached_MakeNumbaClass(cls):
-        return MakeNumbaClass(cls)
+    def cached_MakeNumbaClass(cls, cache):
+        return MakeNumbaClass(cls, cache)
 
     def deco(cls):
 
+        #
+        #
+        #
+        _NB_CACHE_DIR = os.environ.get("NUMBA_CACHE_DIR")
+        print("Check #1: NUMBA_CACHE_DIR: ", _NB_CACHE_DIR)
+
+        _home = os.path.expanduser("~")
+        _path = os.path.join(_home, "numba_temp")
+        if not os.path.isdir(_path):
+            os.mkdir(_path)
+
+        os.environ["NUMBA_CACHE_DIR"] = _path
+
+        print("Check #1: NUMBA_CACHE_DIR: ", os.environ.get("NUMBA_CACHE_DIR"))
+
+        #
+        #
+        #
+
         if cache:
             print("Get cached output")
-            nbc = cached_MakeNumbaClass(cls)
+            nbc = cached_MakeNumbaClass(cls, cache)
         else:
             print("Generate new output")
-            nbc = MakeNumbaClass(cls)
+            nbc = MakeNumbaClass(cls, cache)
 
         if writeout:
             # Construct filepath for generated module
