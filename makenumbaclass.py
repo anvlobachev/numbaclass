@@ -19,9 +19,9 @@ class MakeNumbaClass:
     NBPREFIX = "NB"
     TAB = "    "
 
-    def __init__(self, cls):
+    def __init__(self, cls, cache):
 
-        self.cache = False
+        self.cache = cache
 
         self.classname = cls.__name__
         self.structrefname = cls.__name__ + "NB"
@@ -85,14 +85,7 @@ class MakeNumbaClass:
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
         self._remove_definition(lines_)
 
-        print("-----------------------------------------------------------------")
-        print("lines_ :")
-        print(lines_)
-
-        print("-----------------------------------------------------------------")
-
         def_line = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
-        # lines_[0] = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
 
         new_lines = []
         new_lines.append(def_line)
