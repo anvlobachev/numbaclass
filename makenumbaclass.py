@@ -65,15 +65,12 @@ class MakeNumbaClass:
 
     def _remove_definition(self, lines_):
         """
-        Removes single lined defintion and
-        definitions on several lines with long and/or many arguments
+        Removes function definition from list of lines
         """
         for line in lines_[:]:
-            if ":" in line:
-                lines_.remove(line)
+            lines_.remove(line)
+            if "):" in line:
                 break
-            else:
-                lines_.remove(line)
 
     def _gen_init(self, src):
         """
@@ -164,11 +161,12 @@ def get__{name}(self):
         _parts["args"] = list(inspect.getfullargspec(src).args)
 
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
+        self._remove_definition(lines_)
 
         for n in range(0, len(lines_)):
             if lines_[n].startswith("    "):
                 lines_[n] = lines_[n][len(self.TAB) :]
-        _parts["code"] = lines_[1:]
+        _parts["code"] = lines_
 
         self.methods_parts_.append(_parts)
 
