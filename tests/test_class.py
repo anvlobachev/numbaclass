@@ -2,7 +2,7 @@ from numbaclass import numbaclass
 import numpy as np
 
 
-@numbaclass(cache=False, writeout=True)
+@numbaclass(cache=True, writeout=True)
 class TestExample:
     def __init__(
         self,
@@ -10,9 +10,11 @@ class TestExample:
         #
         #
         #
+        # z
     ):
         """
         Init routines2
+        Init routines3
         """
 
         self.prop1 = np.zeros(n, dtype=np.float64)
