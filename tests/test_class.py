@@ -5,7 +5,11 @@ import numpy as np
 @numbaclass(cache=False, writeout=True)
 class TestExample:
     def __init__(
-        self, n, alfa, beta, gamma, theta, sigma, omega, meta, nano, zeta, cardano, more
+        self,
+        n,
+        #
+        #
+        #
     ):
         """
         Init routines2
@@ -15,7 +19,13 @@ class TestExample:
         self.prop2 = np.zeros(n, dtype=np.float64)
         print("Init done")
 
-    def incr_prop1(self):
+    def incr_prop1(
+        self,
+        #
+        #
+        #
+        #
+    ):
         """
         More comments
         """
