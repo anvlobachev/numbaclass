@@ -2,19 +2,7 @@ import inspect
 
 
 class MakeNumbaClass:
-    """
-    class IndicatorAtr(structref.StructRefProxy):
-    def __new__(
-        cls,
-        arg1,
-    ):
-        return structref.StructRefProxy.__new__(
-            cls,
-            arg1,
-        )
-
-
-    """
+    """ """
 
     NBPREFIX = "NB"
     TAB = "    "

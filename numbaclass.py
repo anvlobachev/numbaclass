@@ -12,18 +12,12 @@ from importlib.machinery import SourceFileLoader
 
 def numbaclass(_cls=None, cache=None, writeout=None):
     """
-    cache flag for both:
-      @numbaclass decorator and
-      @njit(cache=...) flag inside generated StructRef
-
     TODO: Issue with matching __init__ arguments and instance attrnames
     TODO: Decide on postfix in name of converted class, TestExampleNB
     TODO: Explore more on: Importing a Dynamically Generated Module
 
-    DONE: Implement cache, issue #1
-    # https://numba.discourse.group/t/hacking-numba-cache-dir-and-userprovidedcachelocator-to-package-jit-cache-in-egg/895/3
-
     """
+
     # Set defaults flags
     if cache is None:
         cache = True
@@ -35,10 +29,10 @@ def numbaclass(_cls=None, cache=None, writeout=None):
     def deco(cls):
 
         if cache:
-            print("Get cached output")
+            # print("Get cached output")
             nbc = cached_MakeNumbaClass(cls, cache)
         else:
-            print("Generate new output")
+            # print("Generate new output")
             nbc = MakeNumbaClass(cls, cache)
 
         if cache:
