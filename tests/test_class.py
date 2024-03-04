@@ -2,7 +2,7 @@ from numbaclass import numbaclass
 import numpy as np
 
 
-@numbaclass(cache=True, writeout=True)
+@numbaclass(cache=True)
 class TestExample:
     def __init__(
         self,
