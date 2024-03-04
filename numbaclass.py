@@ -16,11 +16,8 @@ def numbaclass(_cls=None, cache=None, writeout=None):
       @numbaclass decorator and
       @njit(cache=...) flag inside generated StructRef
 
-
     TODO: Issue with matching __init__ arguments and instance attrnames
-
     TODO: Decide on postfix in name of converted class, TestExampleNB
-
     TODO: Explore more on: Importing a Dynamically Generated Module
 
     DONE: Implement cache, issue #1
@@ -30,8 +27,6 @@ def numbaclass(_cls=None, cache=None, writeout=None):
     # Set defaults flags
     if cache is None:
         cache = True
-    # if writeout is None:
-    #     writeout = False
 
     # TODO: File cache (?)
     def cached_MakeNumbaClass(cls, cache):
@@ -50,10 +45,12 @@ def numbaclass(_cls=None, cache=None, writeout=None):
             # Construct filepath for generated module
             _absfile = inspect.getabsfile(cls)
             print("_absfile: ", _absfile)
-            _newabsfile = os.path.join(
-                os.path.split(_absfile)[0], f"{nbc.get_module_name}.py"
-            )
 
+            _cachedir = os.path.join(os.path.split(_absfile)[0], "__pycache__")
+            if not os.path.isdir(_cachedir):
+                os.mkdir(_cachedir)
+
+            _newabsfile = os.path.join(_cachedir, f"{nbc.get_module_name}.py")
             with open(_newabsfile, "w") as file:
                 file.write(nbc.get_nb_module)
                 print("Numbaclass module saved: ", nbc.get_module_name)
