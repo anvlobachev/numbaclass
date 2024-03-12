@@ -51,13 +51,19 @@ class MakeNumbaClass:
         )
         self.get_imports += "\n"
 
-    def _remove_definition(self, lines_):
+    def _remove_definition(self, src, lines_):
         """
         Removes function definition from list of lines
         """
+
         for line in lines_[:]:
             lines_.remove(line)
-            if "):" in line:
+
+            # Remove trailing comments
+            _line = line
+            if "#" in line:
+                _line = line.split("#")[0].strip() + "\n"
+            if ":\n" in _line:
                 break
 
     def _gen_init(self, src):
@@ -71,7 +77,8 @@ class MakeNumbaClass:
         # getsourcelines docs: Return a list of source lines and starting line number for an object.
 
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
-        self._remove_definition(lines_)
+
+        self._remove_definition(src, lines_)
 
         def_line = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
 
@@ -142,7 +149,8 @@ def get__{name}(self):
         _parts["args"] = list(inspect.getfullargspec(src).args)
 
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
-        self._remove_definition(lines_)
+
+        self._remove_definition(src, lines_)
 
         for n in range(0, len(lines_)):
             if lines_[n].startswith("    "):
