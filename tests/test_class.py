@@ -1,6 +1,9 @@
 from numbaclass import numbaclass
 import numpy as np
 
+# import os
+# os.environ["NUMBACLS_BYPASS"] = "0"
+
 
 @numbaclass(cache=True)
 class TestExample:
