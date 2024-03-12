@@ -23,23 +23,23 @@ class TestExample:
 
     def incr_prop1(
         self,
+        val: int,
         #
         #
         #
-        #
-    ):
+    ) -> None:  # Trailing comment and annotations
         """
         More comments
         """
-        self.prop1[:] += 1
+        self.prop1[:] += val
 
     def check_me(self):
         print(self.prop1)
 
 
 obj = TestExample(4)
-obj.incr_prop1()
-obj.incr_prop1()
+obj.incr_prop1(1)
+obj.incr_prop1(3)
 obj.check_me()
 
 
