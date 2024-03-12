@@ -65,7 +65,17 @@ def numbaclass(_cls=None, cache=None, writeout=None):
 
         return _initcall
 
+    # TODO: Set as envvar
+    NUMBACLS_BYPASS = 1
+
+    def deco_bypass(cls):
+        return cls
+
     if _cls is None:
+        if NUMBACLS_BYPASS:
+            return deco_bypass
         return deco
     else:
+        if NUMBACLS_BYPASS:
+            return _cls
         return deco(_cls)
