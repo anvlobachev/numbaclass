@@ -18,32 +18,32 @@ class TestExample:
         # z
     ):
         """
-        Init routines2
-        Init routines3
+        Numbaclass will convert __init__ to wrapper for structref.
+        Safely perform routines in pure Python here to setup inputs for structref.
+
+        .self properties must be compatible with Numba requirements
         """
 
         self.prop1 = np.zeros(n, dtype=np.float64)
         self.prop2 = np.zeros(n, dtype=np.float64)
+
+        self.prop1[:] = 7  # Property variation
         print("Init done")
 
-    # void(int64,)
     # (pyobject, int64,)
     # (float64[:], int64,)
     #
     def incr_prop1(
         self,
         val: int,
-        #
-        #
-        #
+        # Multiline args
+        # Multiline args
     ) -> None:  # Trailing comment and annotations
         """
         More comments
         """
         self.prop1[:] += val
 
-    # New line
-    #
     def check_me(self):
         print(self.prop1)
 
