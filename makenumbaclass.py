@@ -92,7 +92,9 @@ class MakeNumbaClass:
                 line = line[len(self.TAB) :]
             # Retrieve attr instance names by "self." clause
             if "self." in line and not line.lstrip().startswith("#"):
-                _name = line.split("self.")[1].split("=")[0].rstrip()
+                _name = (
+                    line.split("self.")[1].split("=")[0].rstrip().split("[")[0].strip()
+                )
                 if _name not in self.attrs_names_:
                     self.attrs_names_.append(_name)
                 line = line.replace("self.", "")
