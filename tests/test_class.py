@@ -3,6 +3,8 @@ import numpy as np
 
 # import os
 # os.environ["NUMBACLS_BYPASS"] = "0"
+# from numba.extending import overload, register_jitable
+# from numba import njit
 
 
 @numbaclass(cache=True)
@@ -24,6 +26,10 @@ class TestExample:
         self.prop2 = np.zeros(n, dtype=np.float64)
         print("Init done")
 
+    # void(int64,)
+    # (pyobject, int64,)
+    # (float64[:], int64,)
+    #
     def incr_prop1(
         self,
         val: int,
@@ -36,6 +42,8 @@ class TestExample:
         """
         self.prop1[:] += val
 
+    # New line
+    #
     def check_me(self):
         print(self.prop1)
 
