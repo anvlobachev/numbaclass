@@ -24,6 +24,7 @@ class MakeNumbaClass:
         self.get_init_code = ""
         self.get_methods_code_ = []
 
+        self.src_module = inspect.getmodule(cls)
         self._gen_imports(cls)
 
         for itm in inspect.getmembers(cls):
@@ -35,8 +36,8 @@ class MakeNumbaClass:
         self.get_nb_module = self._gen_final_module()
 
     def _gen_imports(self, src):
-        src_module = inspect.getmodule(src)
-        lines_ = inspect.getsourcelines(src_module)[0]
+        # src_module = inspect.getmodule(src)
+        lines_ = inspect.getsourcelines(self.src_module)[0]
 
         for line in lines_:
             if "@numbaclass" in line and not line.lstrip().startswith("#"):
@@ -143,12 +144,25 @@ def get__{name}(self):
         """
         Collect methods parts for latter use
         """
-        _parts = {"name": "", "args": [], "code": []}
+        _parts = {"name": "", "args": [], "numba_type_signature": "", "code": []}
 
         _parts["name"] = src.__name__
         _parts["args"] = list(inspect.getfullargspec(src).args)
 
-        lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
+        lines_, line_num_from_module = inspect.getsourcelines(
+            src
+        )  # We need only lines of code
+
+        # NOTE: Issue #4, Implement type infer:
+        #   Implemented extraction of signature from comment line
+        #   But, explicit signature is not working in case of structref
+        #   because of 'self' statement in short.
+
+        # module_lines_ = inspect.getsourcelines(self.src_module)[0]
+        # _sign = module_lines_[line_num_from_module - 2]
+        # if "#" in _sign:
+        #     _sign = _sign.split("#")[1].strip()
+        #     _parts["numba_type_signature"] = _sign
 
         self._remove_definition(src, lines_)
 
@@ -174,15 +188,21 @@ def get__{name}(self):
         _out = ""
         for _parts in self.methods_parts_:
             _args = ", ".join(_parts["args"])
+            _signature = ""
+            ## Issue #4, Implement type infer.
+            # _signature = _parts["numba_type_signature"]
+            # if len(_signature) != 0:
+            #     _signature = "'" + _signature + "'" + ", "
+
             name = _parts["name"]
             _out += f"""
-@njit(cache={self.cache})
-def invoke__{name}({_args}):
-    return the__{name}({_args})
-
 @register_jitable
 def the__{name}({_args}):
-{"".join(_parts["code"])}\n"""
+{"".join(_parts["code"])}
+
+@njit({_signature}cache={self.cache})
+def invoke__{name}({_args}):
+    return the__{name}({_args})\n"""
 
         return _out
 
@@ -229,13 +249,16 @@ def ol__{name}({_args}):
         _out += self.get_imports
         _out += self.get_init_code
 
+        _out += self._gen_preprocess_fields()
         _out += self._gen__new__()
+        #
         _out += self._gen_properties()
+
         _out += self._gen_methods_defs()
+
+        _out += self._gen_define_proxy()
         _out += self._gen_jit_properties()
         _out += self._gen_jit_methods_defs()
-        _out += self._gen_preprocess_fields()
-        _out += self._gen_define_proxy()
         _out += self._gen_overload_methods()
 
         return _out
