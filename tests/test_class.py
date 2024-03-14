@@ -9,19 +9,16 @@ import numpy as np
 
 @numbaclass(cache=True)
 class TestExample:
-    def __init__(
-        self,
-        n,
-        #
-        #
-        #
-        # z
-    ):
+    def __init__(self, n):
         """
-        Numbaclass will convert __init__ to wrapper for structref.
-        Safely perform routines in pure Python here to setup inputs for structref.
+        Numbaclass will convert __init__ to wrapper function,
+        which will return jitted structref instance.
+        It's safe to use pure Python and any modules here to fetch data or
+        process values for structref inputs.
 
-        .self properties must be compatible with Numba requirements
+        Note that, instance properties with  must be
+        compatible with Numba requirements.
+
         """
 
         self.prop1 = np.zeros(n, dtype=np.float64)
@@ -30,9 +27,6 @@ class TestExample:
         self.prop1[:] = 7  # Property variation
         print("Init done")
 
-    # (pyobject, int64,)
-    # (float64[:], int64,)
-    #
     def incr_prop1(
         self,
         val: int,
@@ -53,5 +47,11 @@ obj.incr_prop1(1)
 obj.incr_prop1(3)
 obj.check_me()
 
-
 print(obj)
+
+
+def test_conversion():
+    assert TestExample(4)
+
+
+print(test_conversion())
