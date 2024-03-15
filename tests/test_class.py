@@ -13,7 +13,7 @@ class TestExample:
         """
         Numbaclass will convert __init__ to wrapper function,
         which will return jitted structref instance.
-        It's safe to use pure Python and any modules here to fetch data or
+        It's safe to use pure Python and any modules here to fetch data and
         process values for structref inputs.
 
         Note that, instance properties with  must be
