@@ -6,7 +6,7 @@ import importlib
 import os
 
 
-from makenumbaclass import MakeNumbaClass
+from numbaclass.makenumbaclass import MakeNumbaClass
 from importlib.machinery import SourceFileLoader
 
 
