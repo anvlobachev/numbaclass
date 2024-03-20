@@ -1,4 +1,4 @@
-from numbaclass import numbaclass
+from numbaclass.numbaclass import numbaclass
 import numpy as np
 
 # import os
@@ -7,7 +7,8 @@ import numpy as np
 # from numba import njit
 
 
-@numbaclass(cache=True)
+# @numbaclass(cache=True)
+@numbaclass
 class TestExample:
     def __init__(self, n):
         """
