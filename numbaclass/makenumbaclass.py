@@ -58,13 +58,14 @@ class MakeNumbaClass:
         """
 
         for line in lines_[:]:
-            lines_.remove(line)
 
+            lines_.remove(line)
             # Remove trailing comments
-            _line = line
             if "#" in line:
-                _line = line.split("#")[0].strip() + "\n"
-            if ":\n" in _line:
+                line = line.split("#")[0].strip() + "\n"
+
+            # End of difinition
+            if ":\n" in line:
                 break
 
     def _gen_init(self, src):
@@ -75,8 +76,6 @@ class MakeNumbaClass:
         """
         #  Don't include 'self' argument, skip first item [1:]
         self.init_args_names_ = list(inspect.getfullargspec(src).args[1:])
-        # getsourcelines docs: Return a list of source lines and starting line number for an object.
-
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
 
         self._remove_definition(src, lines_)
