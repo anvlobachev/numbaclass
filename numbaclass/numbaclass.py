@@ -10,11 +10,9 @@ from numbaclass.makenumbaclass import MakeNumbaClass
 from importlib.machinery import SourceFileLoader
 
 
-def numbaclass(_cls=None, cache=None, writeout=None):
+def numbaclass(_cls=None, cache=None):
     """
     TODO: Issue with matching __init__ arguments and instance attrnames
-    TODO: Decide on postfix in name of converted class, TestExampleNB
-    TODO: Explore more on: Importing a Dynamically Generated Module
 
     """
 
