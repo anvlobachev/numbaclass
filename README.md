@@ -1,7 +1,10 @@
 ## Numbaclass
 
-Add @numbaclass decorator to Python class, to compile it with Numba.\
-Converted class will work inside other jitted or non-jitted functions in pure Python.
+Add @numbaclass decorator to Python class, to compile it with Numba.
+
+* Converted class will work inside other jitted or non-jitted functions in pure Python.
+* Classed can be nested.
+* Support Numba cache
 
 ```python
 import numpy as np
@@ -19,6 +22,8 @@ class ExampleClass:
 ```
 
 Because @numbaclass relies on Numba StructRef, the above example, under the hood, converts to this:
+<details>
+<summary>Click to expand <br />&nbsp;</summary>
 
 ```python
 import numpy as np
@@ -34,7 +39,9 @@ def ExampleClassNB(n):
 # TODO: Inclue full result
 ```
 
-A lot of wrappers and boilerplate code, which @numbaclass helps to avoid.
+</details>
+
+Using flag @numbaclass(cache=True), generated code will be saved to \_\_numbacls\_\_ dir within decorated class location.
 
 ## Use Guides and Tips
 
