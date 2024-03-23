@@ -8,7 +8,7 @@ import numpy as np
 from numbaclass import numbaclass
 
 @numbaclass
-class TestExample:
+class ExampleClass:
     def __init__(self, n):
         self.a = np.zeros(n, dtype=np.float64)
         self.b = np.zeros(n, dtype=np.float64)
@@ -26,7 +26,7 @@ import numpy as np
 from numba import njit 
 from numba.experimental import structref 
 
-def TestExampleNB(n): 
+def ExampleClassNB(n): 
     a = np.zeros(n, dtype=np.float64) 
     b = np.zeros(n, dtype=np.float64) 
     return 
