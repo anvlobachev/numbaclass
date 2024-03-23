@@ -1,15 +1,10 @@
-from numbaclass.numbaclass import numbaclass
+# from numbaclass.numbaclass import numbaclass
 import numpy as np
-
-# import os
-# os.environ["NUMBACLS_BYPASS"] = "0"
-# from numba.extending import overload, register_jitable
-# from numba import njit
 
 
 # @numbaclass(cache=True)
-@numbaclass
-class TestExample:
+# @numbaclass
+class ExampleClass:
     def __init__(self, n):
         """
         Numbaclass will convert __init__ to wrapper function,
@@ -39,20 +34,14 @@ class TestExample:
         """
         self.prop1[:] += val
 
+    # No type hints
     def check_me(self):
         print(self.prop1)
 
 
-obj = TestExample(4)
-obj.incr_prop1(1)
-obj.incr_prop1(3)
-obj.check_me()
+# obj = ExampleClass(4)
+# obj.incr_prop1(1)
+# obj.incr_prop1(3)
+# obj.check_me()
 
-print(obj)
-
-
-def test_conversion():
-    assert TestExample(4)
-
-
-print(test_conversion())
+# print(obj)
