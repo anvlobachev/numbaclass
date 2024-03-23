@@ -42,7 +42,7 @@ def numbaclass(_cls=None, cache=None):
             _absfile = inspect.getabsfile(cls)
             print("_absfile: ", _absfile)
 
-            _cachedir = os.path.join(os.path.split(_absfile)[0], "__pycache__")
+            _cachedir = os.path.join(os.path.split(_absfile)[0], "__numbacls__")
             if not os.path.isdir(_cachedir):
                 os.mkdir(_cachedir)
 
