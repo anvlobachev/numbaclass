@@ -19,7 +19,7 @@ def test_conversion():
     # purepy_cls = ExampleClass(5)
 
     try:
-        ExampleClassNB = numbaclass(_cls=ExampleClass)
+        ExampleClassNB = numbaclass(_cls=ExampleClass, cache=True)
         numba_cls = ExampleClassNB(5)
     except Exception as e:
         pytest.fail(f"Unexpected exception raised: {e}")

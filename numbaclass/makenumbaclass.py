@@ -6,6 +6,8 @@ class MakeNumbaClass:
 
     NBPREFIX = "NB"
     TAB = "    "
+    TAB2 = TAB + TAB
+    TAB3 = TAB + TAB + TAB
 
     def __init__(self, cls, cache):
 
@@ -115,8 +117,8 @@ class MakeNumbaClass:
 
     def _gen__new__(self):
 
-        _args1 = ",\n".join([f"\t\t{name}" for name in self.attrs_names_])
-        _args2 = ",\n".join([f"\t\t\t{name}" for name in self.attrs_names_])
+        _args1 = ",\n".join([f"{self.TAB2}{name}" for name in self.attrs_names_])
+        _args2 = ",\n".join([f"{self.TAB3}{name}" for name in self.attrs_names_])
 
         _out = f"""
 class {self.classname}{self.NBPREFIX}(structref.StructRefProxy):
