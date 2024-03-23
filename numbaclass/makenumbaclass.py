@@ -40,8 +40,13 @@ class MakeNumbaClass:
         lines_ = inspect.getsourcelines(self.src_module)[0]
 
         for line in lines_:
-            if "@numbaclass" in line and not line.lstrip().startswith("#"):
+            # Remove trailing comments
+            if "#" in line:
+                line = line.split("#")[0].strip() + "\n"
+
+            if "@numbaclass" in line or "class " in line:
                 break
+
             self.get_imports += line
 
         self.get_imports += "from numba import njit\n"
