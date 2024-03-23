@@ -36,13 +36,13 @@ class ExampleClassNBType(types.StructRef):
 class ExampleClassNB(structref.StructRefProxy):
     def __new__(
         cls,
-		prop1,
-		prop2
+        prop1,
+        prop2
     ):
         return structref.StructRefProxy.__new__(
             cls,
-			prop1,
-			prop2
+prop1,
+prop2
         )
 
     @property
