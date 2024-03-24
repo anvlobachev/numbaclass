@@ -1,5 +1,7 @@
 __pycache__/
 .vscode/
+.pytest_cache/
+
 
 # Local History for Visual Studio Code
 .history/
