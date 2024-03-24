@@ -12,7 +12,7 @@ def test_pure_python_instance_sanity_check():
         purepy_cls.check_me()
 
     except Exception as e:
-        pytest.fail(f"Unexpected exception raised: {e}")
+        pytest.fail(f"Exception raised: {e}")
 
 
 def test_convered_without_typos():
@@ -25,7 +25,7 @@ def test_convered_without_typos():
         ExampleClassNB = numbaclass(_cls=ExampleClass, cache=True)
         numba_cls = ExampleClassNB(5)
     except Exception as e:
-        pytest.fail(f"Unexpected exception raised: {e}")
+        pytest.fail(f"Exception raised: {e}")
 
 
 # def test_is_jittable():
@@ -50,7 +50,7 @@ def test_can_run_inside_jitted_function():
         run_in_jit(numba_cls)
 
     except Exception as e:
-        pytest.fail(f"Unexpected exception raised: {e}")
+        pytest.fail(f"Exception raised: {e}")
 
 
 # if __name__ == "__main__":
