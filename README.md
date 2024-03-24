@@ -41,8 +41,8 @@ def ExampleClassNB(n):
 
 </details>
 
-cache=True flag is default:
-@numbaclass(cache=True), generated code and compiled cache will be saved to dir \_\_numbacls\_\_, within same location as decorated class file.
+By default, generated code and compiled cache will be saved to dir \_\_numbacls\_\_, within same location as decorated class file.
+Using @numbaclass(cache=False) will not store files and caches.
 
 ## Use Guides and Tips
 
