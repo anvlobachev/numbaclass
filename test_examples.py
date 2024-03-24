@@ -15,7 +15,7 @@ def test_pure_python_instance_sanity_check():
         pytest.fail(f"Exception raised: {e}")
 
 
-def test_convered_without_typos():
+def test_converted_without_typos():
 
     from examples.example_class import ExampleClass
 
@@ -28,11 +28,11 @@ def test_convered_without_typos():
         pytest.fail(f"Exception raised: {e}")
 
 
-# def test_is_jittable():
-#     assert False
-
-
 def test_can_run_inside_jitted_function():
+    """
+    Note, that instance object ( numba_cls ) created
+    outside jitted function.
+    """
 
     from numbaclass.numbaclass import numbaclass
     from examples.example_class import ExampleClass
