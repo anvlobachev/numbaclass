@@ -51,6 +51,7 @@ Using @numbaclass(cache=False) will not store files and caches.
 * Class methods must use Numba compatibe routines.
   * tip 1
   * tip 2
+  * tip 3
 *
 
 ## Installation
