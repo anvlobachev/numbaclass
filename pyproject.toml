@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "numbaclass"
-dynamic = ["version"]
+version = "0.1.0a"
 description = 'Convert Python class to Numba aware class, using StructRef.'
 readme = "README.md"
 requires-python = ">=3.8"
@@ -31,8 +31,6 @@ Documentation = "https://github.com/unknown/numbaclass#readme"
 Issues = "https://github.com/unknown/numbaclass/issues"
 Source = "https://github.com/unknown/numbaclass"
 
-[tool.hatch.version]
-path = "src/numbaclass/__about__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -65,9 +63,7 @@ check = "mypy --install-types --non-interactive {args:src/numbaclass tests}"
 source_pkgs = ["numbaclass", "tests"]
 branch = true
 parallel = true
-omit = [
-  "src/numbaclass/__about__.py",
-]
+omit = []
 
 [tool.coverage.paths]
 numbaclass = ["src/numbaclass", "*/numbaclass/src/numbaclass"]

@@ -20,7 +20,7 @@ def test_converted_without_typos():
     from examples.example_class import ExampleClass
 
     try:
-        from numbaclass.numbaclass import numbaclass
+        from numbaclass import numbaclass
 
         ExampleClassNB = numbaclass(_cls=ExampleClass, cache=True)
         numba_cls = ExampleClassNB(5)
@@ -34,7 +34,7 @@ def test_can_run_inside_jitted_function():
     outside jitted function.
     """
 
-    from numbaclass.numbaclass import numbaclass
+    from numbaclass import numbaclass
     from examples.example_class import ExampleClass
 
     try:
