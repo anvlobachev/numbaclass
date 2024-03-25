@@ -51,7 +51,3 @@ def test_can_run_inside_jitted_function():
 
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
-
-
-# if __name__ == "__main__":
-#     test_conversion()
