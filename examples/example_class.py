@@ -1,4 +1,4 @@
-# from numbaclass.numbaclass import numbaclass
+# from numbaclass import numbaclass
 import numpy as np
 
 
