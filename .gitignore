@@ -1,7 +1,11 @@
-__pycache__/
+.idea/
 .vscode/
+__pycache__/
 .pytest_cache/
-
+dist/
+.tox/
+.coverage
+.coverage.*
 
 # Local History for Visual Studio Code
 .history/
