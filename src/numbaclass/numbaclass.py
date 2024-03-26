@@ -12,6 +12,7 @@ from importlib.machinery import SourceFileLoader
 
 def numbaclass(_cls=None, cache=None):
     """
+    FIXME: Ensure right order of structref setup at MakeNumbaClass
     TODO: Issue with matching __init__ arguments and instance attrnames
 
     """
