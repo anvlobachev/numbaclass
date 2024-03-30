@@ -37,6 +37,8 @@ class MakeNumbaClass:
 
         self.get_nb_module = self._gen_final_module()
 
+        print("TEST: MakeNumbaClass finished 3")
+
     def _gen_imports(self, src):
         # src_module = inspect.getmodule(src)
         lines_ = inspect.getsourcelines(self.src_module)[0]
