@@ -2,7 +2,6 @@ import numpy as np
 from numbaclass import numbaclass
 
 
-# @numbaclass
 @numbaclass(cache=False)
 class ExampleTwo:
     def __init__(self, n):
