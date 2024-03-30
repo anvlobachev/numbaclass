@@ -7,6 +7,9 @@ dist/
 .coverage
 .coverage.*
 
+
+*__nbc__.py
+
 # Local History for Visual Studio Code
 .history/
 
