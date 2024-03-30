@@ -61,8 +61,6 @@ class MakeNumbaClass:
         )
         self.get_imports += "\n"
 
-        print("self.get_imports: ", self.get_imports)
-
     def _remove_definition(self, src, lines_):
         """
         Removes function definition from list of lines
