@@ -3,7 +3,7 @@ from numbaclass import numbaclass
 
 
 @numbaclass(cache=False)
-class ExampleTwo:
+class ExampleDecorated:
     def __init__(self, n):
         """
         Numbaclass will convert __init__ to wrapper function,
@@ -38,7 +38,7 @@ class ExampleTwo:
         print(self.prop1)
 
 
-obj = ExampleTwo(4)
+obj = ExampleDecorated(4)
 obj.incr_prop1(1)
 obj.incr_prop1(3)
 obj.check_me()
