@@ -48,7 +48,7 @@ class MakeNumbaClass:
             if "#" in line:
                 line = line.split("#")[0].strip() + "\n"
 
-            if "@numbaclass" in line or "class " in line:
+            if line.startswith("@numbaclass") or line.startswith("class "):
                 break
 
             self.get_imports += line
@@ -60,6 +60,8 @@ class MakeNumbaClass:
             "from numba.core.extending import overload_method, register_jitable\n"
         )
         self.get_imports += "\n"
+
+        print("self.get_imports: ", self.get_imports)
 
     def _remove_definition(self, src, lines_):
         """
