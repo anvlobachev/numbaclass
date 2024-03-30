@@ -51,3 +51,21 @@ def test_can_run_inside_jitted_function():
 
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
+
+
+def test_can_run_nested_structrefs():
+
+    try:
+        from examples.example_parent import ExampleParent
+
+        numba_cls = ExampleParent(2, 3)
+        numba_cls.action()
+        numba_cls.check_me()
+
+    except Exception as e:
+        pytest.fail(f"Exception raised: {e}")
+
+    # assert False
+
+
+# test_can_run_nested_structrefs()
