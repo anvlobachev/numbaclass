@@ -115,7 +115,7 @@ class MakeNumbaClass:
         )
 
         self.get_init_code = "".join(new_lines)
-        self.get_module_name = self.classname.lower() + "_nb"
+        self.get_module_name = self.classname.lower() + "__nbc__"
 
     def _gen__new__(self):
 
