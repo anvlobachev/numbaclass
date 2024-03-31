@@ -4,21 +4,29 @@ Add @numbaclass decorator to Python class, to compile it with Numba.
 
 * Converted class will work inside other jitted or non-jitted functions in pure Python.
 * Classed can be nested.
-* Support Numba cache
+* Supports Numba cache
 
 ```python
 import numpy as np
 from numbaclass import numbaclass
 
-@numbaclass
-class ExampleClass:
-    def __init__(self, n):
-        self.a = np.zeros(n, dtype=np.float64)
-        self.b = np.zeros(n, dtype=np.float64)
-    
-    def process():
-        for i in range(1000):
-            pass
+
+@numbaclass(cache=True)
+class ExampleIncr:
+    def __init__(self, size):
+        """
+        __init__ will be converted to wrapper function,
+        which will return jitted structref instance.
+        Use any pure Python here.
+        """
+        self.arr_ = np.zeros(size, dtype=np.int64)
+        self.arr_[:] = 3  # Arbitrary assign
+
+    def incr(self, i):
+        self.arr_[i] += 1
+
+    def get_count(self, i):
+        return self.arr_[i]
 ```
 
 Because @numbaclass relies on Numba StructRef, the above example, under the hood, converts to this:
@@ -27,32 +35,95 @@ Because @numbaclass relies on Numba StructRef, the above example, under the hood
 
 ```python
 import numpy as np
- 
-from numba import njit 
-from numba.experimental import structref 
+from numbaclass import numbaclass
 
-def ExampleClassNB(n): 
-    a = np.zeros(n, dtype=np.float64) 
-    b = np.zeros(n, dtype=np.float64) 
-    return 
 
-# TODO: Inclue full result
+from numba import njit
+from numba.core import types
+from numba.experimental import structref
+from numba.core.extending import overload_method, register_jitable
+
+def ExampleIncr(size):
+    """
+    __init__ will be converted to wrapper function,
+    which will return jitted structref instance.
+    Use any pure Python here.
+    """
+    arr_ = np.zeros(size, dtype=np.int64)
+    arr_[:] = 3  # Arbitrary assign
+    return ExampleIncrNB(arr_)
+
+@structref.register
+class ExampleIncrNBType(types.StructRef):
+    def preprocess_fields(self, fields):
+        return tuple((name, types.unliteral(typ)) for name, typ in fields)
+
+class ExampleIncrNB(structref.StructRefProxy):
+    def __new__(
+        cls,
+        arr_
+    ):
+        return structref.StructRefProxy.__new__(
+            cls,
+            arr_
+        )
+
+    @property
+    def arr_(self):
+        return get__arr_(self)
+
+    def get_count(self, i):
+        return invoke__get_count(self, i)
+
+    def incr(self, i):
+        return invoke__incr(self, i)
+
+structref.define_proxy(
+    ExampleIncrNB,
+    ExampleIncrNBType,
+    [
+ "arr_"
+    ],
+)
+
+@njit(cache=True)
+def get__arr_(self):
+    return self.arr_
+
+@register_jitable
+def the__get_count(self, i):
+    return self.arr_[i]
+
+
+@njit(cache=True)
+def invoke__get_count(self, i):
+    return the__get_count(self, i)
+
+@register_jitable
+def the__incr(self, i):
+    self.arr_[i] += 1
+
+
+@njit(cache=True)
+def invoke__incr(self, i):
+    return the__incr(self, i)
+
+@overload_method(ExampleIncrNBType, "get_count", fastmath=False)
+def ol__get_count(self, i):
+    return the__get_count
+
+@overload_method(ExampleIncrNBType, "incr", fastmath=False)
+def ol__incr(self, i):
+    return the__incr
 ```
 
 </details>
 
-By default, generated code and compiled cache will be saved to dir \_\_numbacls\_\_, within same location as decorated class file.
-Using @numbaclass(cache=False) will not store files and caches.
+Every method gets wrapped with @njit (same as @jit(nopython=True))
 
-## Use Guides and Tips
-
-* Inside \_\_init\_\_() define attributes, prepare and process data in a regular python way, use any libraries.
-* Other dunder methods will be ignored, don't override.
-* Class methods must use Numba compatibe routines.
-  * tip 1
-  * tip 2
-  * tip 3
-*
+By default, cache flag is False. @numbaclass(cache=False) will not store files and caches.\
+Set @numbaclass(cache=True) to save generated code and numba compiled cache to
+\_\_nbcache\_\_ folder, neighbouring \_\_pycache\_\_.
 
 ## Installation
 
@@ -60,10 +131,26 @@ Using @numbaclass(cache=False) will not store files and caches.
 pip install numbaclass
 ```
 
-## Configure details
+## Configure
 
-Disable conversion globally via Environment variable: "NUMBACLS_BYPASS" = "1"
+Disable conversion globally via environment variable:\
+"NUMBACLS_BYPASS" = "1"
 
-@numbaclass(cache=True) flag will be translated to Numba @njit(cache=True).\
-Also converted to StructRef class will be saved to \_\_pycache\_\_ folder.\
-Default value: False
+## Use Guides and Tips
+
+* Decorator expects one Python class within module.
+* Numbaclass will convert \_\_init\_\_ to wrapper function,
+which will return jitted structref instance. Use pure Python and any modules here to process data for structref inputs.
+
+    Note that self. attributes within \_\_init\_\_ have to be assigned with Numba compatible data types or objects.
+
+@numbaclass is usefull for arranging compute intensive, repetative operations with a state.
+
+Decorated class stays clean from additional code, which is needed using StructRef directily.
+Caching and nesting is not supported by Numba own @jitclass decorator, which is part of Numba package.\
+@numbaclass utilizes StructRef to cache compiled code and constuct nested classes.
+
+## Todos
+
+* Implement literal_unroll mock.
+* Implement with object() mock to call pure Python from jitted code.
