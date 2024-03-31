@@ -5,9 +5,9 @@ from numba import njit
 def test_pure_python_instance_sanity_check():
 
     try:
-        from examples.example_class import ExampleClass
+        from examples.example_format import ExampleFormat
 
-        purepy_cls = ExampleClass(5)
+        purepy_cls = ExampleFormat(5)
         purepy_cls.incr_prop1(5)
         purepy_cls.check_me()
 
@@ -17,12 +17,12 @@ def test_pure_python_instance_sanity_check():
 
 def test_converted_without_typos():
 
-    from examples.example_class import ExampleClass
+    from examples.example_format import ExampleFormat
 
     try:
         from numbaclass import numbaclass
 
-        ExampleClassNB = numbaclass(_cls=ExampleClass, cache=True)
+        ExampleClassNB = numbaclass(_cls=ExampleFormat, cache=True)
         numba_cls = ExampleClassNB(5)
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
@@ -35,10 +35,10 @@ def test_can_run_inside_jitted_function():
     """
 
     from numbaclass import numbaclass
-    from examples.example_class import ExampleClass
+    from examples.example_format import ExampleFormat
 
     try:
-        ExampleClassNB = numbaclass(_cls=ExampleClass, cache=True)
+        ExampleClassNB = numbaclass(_cls=ExampleFormat, cache=True)
         numba_cls = ExampleClassNB(5)
 
         @njit
@@ -53,19 +53,32 @@ def test_can_run_inside_jitted_function():
         pytest.fail(f"Exception raised: {e}")
 
 
-def test_can_run_nested_structrefs():
-
+def test_can_run_example_incr():
     try:
-        from examples.example_parent import ExampleParent
+        from examples.example_incr import ExampleIncr
 
-        numba_cls = ExampleParent(2, 3)
-        numba_cls.action()
-        numba_cls.check_me()
+        numba_cls = ExampleIncr(3)
+        numba_cls.incr(0)
+        numba_cls.incr(1)
+        numba_cls.incr(2)
+        numba_cls.get_count(0)
 
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
 
-    # assert False
 
+def test_can_run_nested_structrefs():
 
-# test_can_run_nested_structrefs()
+    try:
+        from examples.example_nest import ExampleNest
+
+        numba_cls = ExampleNest(3)
+        numba_cls.update(10.1, 0)
+        numba_cls.update(5.3, 1)
+        numba_cls.update(6.01, 2)
+        numba_cls.update(2.01, 2)
+        numba_cls.update(1.01, 2)
+        numba_cls.count.get_count(2)
+
+    except Exception as e:
+        pytest.fail(f"Exception raised: {e}")
