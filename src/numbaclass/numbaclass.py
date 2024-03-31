@@ -4,7 +4,7 @@ import functools
 import importlib
 
 import os
-
+import sys
 
 # from numbaclass.makenumbaclass import MakeNumbaClass
 from .makenumbaclass import MakeNumbaClass
@@ -44,8 +44,8 @@ def numbaclass(_cls=None, cache=None):
             _absfile = inspect.getabsfile(cls)
             print("_absfile: ", _absfile)
 
-            # _cachedir = os.path.join(os.path.split(_absfile)[0], "__numbacls__")
-            _cachedir = os.path.split(_absfile)[0]
+            _cachedir = os.path.join(os.path.split(_absfile)[0], "__nbcache__")
+            # _cachedir = os.path.split(_absfile)[0]
 
             if not os.path.isdir(_cachedir):
                 os.mkdir(_cachedir)
@@ -55,9 +55,12 @@ def numbaclass(_cls=None, cache=None):
                 file.write(nbc.get_nb_module)
                 print("Numbaclass module saved: ", nbc.get_module_name)
 
-            _numbaclass = SourceFileLoader(
+            spec = importlib.util.spec_from_file_location(
                 nbc.get_module_name, _newabsfile
-            ).load_module()
+            )
+            _numbaclass = importlib.util.module_from_spec(spec)
+            sys.modules[nbc.get_module_name] = _numbaclass
+            spec.loader.exec_module(_numbaclass)
 
         else:
             module_spec = importlib.machinery.ModuleSpec(nbc.get_module_name, None)
