@@ -142,7 +142,7 @@ Disable conversion globally via environment variable:\
 * Numbaclass will convert \_\_init\_\_ to wrapper function,
 which will return jitted structref instance. Use pure Python and any modules here to process data for structref inputs.
 
-    Note that self. attributes within \_\_init\_\_ have to be assigned with Numba compatible data types or objects.
+* "self." attributes within \_\_init\_\_ must be assigned with Numba compatible data types or objects.
 
 @numbaclass is usefull for arranging code for compute intensive, repetative operations with a state.
 
