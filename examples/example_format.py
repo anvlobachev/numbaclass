@@ -1,26 +1,27 @@
+# Variations with comments, annotations and hints for
+# testing purposes.
+
+# from numbaclass import numbaclass
 import numpy as np
-from numbaclass import numbaclass
 
 
-@numbaclass(cache=False)
-class ExampleDecorated:
+# @numbaclass(cache=True)
+# @numbaclass
+class ExampleFormat:
     def __init__(self, n):
         """
         Numbaclass will convert __init__ to wrapper function,
         which will return jitted structref instance.
-        It's safe to use pure Python and any modules here to fetch data and
-        process values for structref inputs.
+        Use pure Python and any modules here to process data for structref inputs.
 
-        Note that, instance properties with  must be
-        compatible with Numba requirements.
-
+        Note attributes have to be assigned with
+        Numba compatible data types and objects.
         """
 
         self.prop1 = np.zeros(n, dtype=np.float64)
         self.prop2 = np.zeros(n, dtype=np.float64)
 
         self.prop1[:] = 7  # Property variation
-        print("Init done")
 
     def incr_prop1(
         self,
@@ -38,9 +39,9 @@ class ExampleDecorated:
         print(self.prop1)
 
 
-obj = ExampleDecorated(4)
-obj.incr_prop1(1)
-obj.incr_prop1(3)
-obj.check_me()
+# obj = ExampleClass(4)
+# obj.incr_prop1(1)
+# obj.incr_prop1(3)
+# obj.check_me()
 
-print(obj)
+# print(obj)
