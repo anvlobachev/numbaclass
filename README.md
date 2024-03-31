@@ -144,13 +144,14 @@ which will return jitted structref instance. Use pure Python and any modules her
 
     Note that self. attributes within \_\_init\_\_ have to be assigned with Numba compatible data types or objects.
 
-@numbaclass is usefull for arranging compute intensive, repetative operations with a state.
+@numbaclass is usefull for arranging code for compute intensive, repetative operations with a state.
 
 Decorated class stays clean from additional code, which is needed using StructRef directily.
-Caching and nesting is not supported by Numba own @jitclass decorator, which is part of Numba package.\
-@numbaclass utilizes StructRef to cache compiled code and constuct nested classes.
+In case of Numba's own @jitclass decorator, caching and nesting is not supported.
+While @numbaclass utilizes StructRef to cache compiled code and constuct nested classes.
 
 ## Todos
 
+* Implement check changes of source vs cached.
 * Implement literal_unroll mock.
 * Implement with object() mock to call pure Python from jitted code.
