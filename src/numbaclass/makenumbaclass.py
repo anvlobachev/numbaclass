@@ -37,17 +37,16 @@ class MakeNumbaClass:
 
         self.get_nb_module = self._gen_final_module()
 
-        print("TEST: MakeNumbaClass finished 3")
-
     def _gen_imports(self, src):
         # src_module = inspect.getmodule(src)
         lines_ = inspect.getsourcelines(self.src_module)[0]
 
         for line in lines_:
-            # Remove trailing comments
+            # Remove inline comments
             if "#" in line:
                 line = line.split("#")[0].strip() + "\n"
 
+            # TODO: Fix in case @numbaclass is renamed
             if line.startswith("@numbaclass") or line.startswith("class "):
                 break
 
@@ -69,7 +68,7 @@ class MakeNumbaClass:
         for line in lines_[:]:
 
             lines_.remove(line)
-            # Remove trailing comments
+            # Remove inline comments
             if "#" in line:
                 line = line.split("#")[0].strip() + "\n"
 
@@ -86,20 +85,28 @@ class MakeNumbaClass:
         #  Don't include 'self' argument, skip first item [1:]
         self.init_args_names_ = list(inspect.getfullargspec(src).args[1:])
         lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
+        docstr = inspect.getdoc(src)
+        if docstr is None:
+            docstr = ""
 
         self._remove_definition(src, lines_)
 
-        def_line = f"def {self.classname}({', '.join(self.init_args_names_)}):\n"
-
         new_lines = []
-        new_lines.append(def_line)
+        new_lines.append(f"def {self.classname}({', '.join(self.init_args_names_)}):")
 
         for n in range(0, len(lines_)):
             line = lines_[n]
-            if line.startswith(self.TAB):
-                line = line[len(self.TAB) :]
+
+            # if line.startswith(self.TAB):
+            #     line = line[len(self.TAB) :]
+            line = line.strip()
+
+            # Remove inline comments
+            if "#" in line:
+                line = line.split("#")[0].rstrip()
+
             # Retrieve attr instance names by "self." clause
-            if "self." in line and not line.lstrip().startswith("#"):
+            if "self." in line and line not in docstr:
                 _name = (
                     line.split("self.")[1].split("=")[0].rstrip().split("[")[0].strip()
                 )
@@ -107,14 +114,13 @@ class MakeNumbaClass:
                     self.attrs_names_.append(_name)
                 line = line.replace("self.", "")
 
-            new_lines.append(line)
-            # lines_[n] = line
+            new_lines.append(self.TAB + line)
 
         new_lines.append(
             self.TAB + f"return {self.structrefname}({', '.join(self.attrs_names_)})\n"
         )
 
-        self.get_init_code = "".join(new_lines)
+        self.get_init_code = "\n".join(new_lines)
         self.get_module_name = self.classname.lower() + "__nbc__"
 
     def _gen__new__(self):

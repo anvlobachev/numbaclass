@@ -5,8 +5,8 @@
 import numpy as np
 
 
-# @numbaclass(cache=True)
 # @numbaclass
+# @numbaclass(cache=True)
 class ExampleFormat:
     def __init__(self, n):
         """
@@ -14,14 +14,15 @@ class ExampleFormat:
         which will return jitted structref instance.
         Use pure Python and any modules here to process data for structref inputs.
 
-        Note attributes have to be assigned with
+        Note self. attributes have to be assigned with
         Numba compatible data types and objects.
         """
 
-        self.prop1 = np.zeros(n, dtype=np.float64)
+        self.prop1 = np.zeros(n, dtype=np.float64)  # self. in comment
         self.prop2 = np.zeros(n, dtype=np.float64)
 
-        self.prop1[:] = 7  # Property variation
+        tmp = 3 + 5
+        self.prop1[:] = tmp  # Property variation
 
     def incr_prop1(
         self,
@@ -30,7 +31,7 @@ class ExampleFormat:
         # Multiline args
     ) -> None:  # Trailing comment and annotations
         """
-        More comments
+        Doc
         """
         self.prop1[:] += val
 
@@ -39,7 +40,7 @@ class ExampleFormat:
         print(self.prop1)
 
 
-# obj = ExampleClass(4)
+# obj = ExampleFormat(4)
 # obj.incr_prop1(1)
 # obj.incr_prop1(3)
 # obj.check_me()
