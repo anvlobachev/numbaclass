@@ -1,6 +1,6 @@
 ## Numbaclass
 
-Add @numbaclass decorator to Python class, to compile it with Numba.
+Add @numbaclass decorator to Python class, to compile it with Numba's experimantal [StructRef](https://numba.readthedocs.io/en/stable/extending/high-level.html#implementing-mutable-structures).
 
 * Converted class will work inside other jitted or non-jitted functions in pure Python.
 * Classed can be nested.
