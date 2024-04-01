@@ -154,6 +154,6 @@ While @numbaclass utilizes StructRef to cache compiled code and constuct nested 
 
 ## Todos
 
-* Implement check changes of source vs cached.
+* Check changes of source vs cached before generate.
 * Implement literal_unroll mock.
 * Implement with object() mock to call pure Python from jitted code.
