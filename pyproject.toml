@@ -14,13 +14,13 @@ authors = [{ name = "Anton Lobachev", email = "anvlobachev@gmail.com" }]
 classifiers = [
   "Development Status :: 3 - Alpha",
   # "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "License :: OSI Approved :: MIT License",
 
 ]
 dependencies = ["numba"]
@@ -48,7 +48,7 @@ check = "mypy --install-types --non-interactive {args:src/numbaclass tests}"
 
 
 [tool.hatch.build.targets.sdist]
-exclude = ["/.github", "/examples", ""]
+exclude = ["/.github", "/examples", "test_examples.py"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/numbaclass"]
