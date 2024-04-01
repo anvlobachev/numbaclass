@@ -14,7 +14,7 @@ def ExampleIncr(size):
     Use any pure Python here.
     """
     arr_ = np.zeros(size, dtype=np.int64)
-    arr_[:] = 3  # Arbitrary assign
+    arr_[:] = 3
     return ExampleIncrNB(arr_)
 
 @structref.register

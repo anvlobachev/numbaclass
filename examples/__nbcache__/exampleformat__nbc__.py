@@ -17,15 +17,16 @@ def ExampleFormat(n):
     Numbaclass will convert __init__ to wrapper function,
     which will return jitted structref instance.
     Use pure Python and any modules here to process data for structref inputs.
-
-    Note attributes have to be assigned with
+    
+    Note self. attributes have to be assigned with
     Numba compatible data types and objects.
     """
-
+    
     prop1 = np.zeros(n, dtype=np.float64)
     prop2 = np.zeros(n, dtype=np.float64)
-
-    prop1[:] = 7  # Property variation
+    
+    tmp = 3 + 5
+    prop1[:] = tmp
     return ExampleFormatNB(prop1, prop2)
 
 @structref.register
@@ -88,7 +89,7 @@ def invoke__check_me(self):
 @register_jitable
 def the__incr_prop1(self, val):
     """
-    More comments
+    Doc
     """
     self.prop1[:] += val
 
