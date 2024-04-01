@@ -144,6 +144,8 @@ which will return jitted structref instance. Use pure Python and any modules her
 
 * "self." attributes within \_\_init\_\_ must be assigned with Numba compatible data types or objects.
 
+* Scalar variables will be treated as constants by StructRef. To be able to update value, it's advisable to use array of one item size.
+
 @numbaclass is usefull for arranging code for compute intensive, repetative operations with a state.
 
 Decorated class stays clean from additional code, which is needed using StructRef directily.
