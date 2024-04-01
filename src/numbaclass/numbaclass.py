@@ -42,7 +42,7 @@ def numbaclass(_cls=None, cache=None):
         if cache:
             # Construct filepath for generated module
             _absfile = inspect.getabsfile(cls)
-            print("_absfile: ", _absfile)
+            # print("_absfile: ", _absfile)
 
             _cachedir = os.path.join(os.path.split(_absfile)[0], "__nbcache__")
             # _cachedir = os.path.split(_absfile)[0]
