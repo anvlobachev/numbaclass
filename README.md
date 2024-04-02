@@ -128,7 +128,10 @@ Set @numbaclass(cache=True) to save generated code and numba compiled cache to
 ## Installation
 
 ```bash
-pip install numbaclass
+git clone git@github.com:anvlobachev/numbaclass.git
+cd numbaclass
+python -m pip install .
+
 ```
 
 ## Configure
