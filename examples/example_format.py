@@ -21,8 +21,10 @@ class ExampleFormat:
         self.prop1 = np.zeros(n, dtype=np.float64)  # self. in comment
         self.prop2 = np.zeros(n, dtype=np.float64)
 
-        tmp = 3 + 5
-        self.prop1[:] = tmp  # Property variation
+        def get_data():
+            return 10
+
+        self.prop1[:] = get_data()  # Property variation
 
     def incr_prop1(
         self,

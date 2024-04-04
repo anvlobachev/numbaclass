@@ -25,8 +25,10 @@ def ExampleFormat(n):
     prop1 = np.zeros(n, dtype=np.float64)
     prop2 = np.zeros(n, dtype=np.float64)
     
-    tmp = 3 + 5
-    prop1[:] = tmp
+    def get_data():
+    return 10
+    
+    prop1[:] = get_data()
     return ExampleFormatNB(prop1, prop2)
 
 @structref.register
