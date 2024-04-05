@@ -255,21 +255,17 @@ def ol__{name}({_args}):
 
     def _gen_final_module(self):
 
-        _out = ""
+        _out = (
+            self.get_imports,
+            self.get_init_code,
+            self._gen_preprocess_fields(),
+            self._gen__new__(),
+            self._gen_properties(),
+            self._gen_methods_defs(),
+            self._gen_define_proxy(),
+            self._gen_jit_properties(),
+            self._gen_jit_methods_defs(),
+            self._gen_overload_methods(),
+        )
 
-        _out += self.get_imports
-        _out += self.get_init_code
-
-        _out += self._gen_preprocess_fields()
-        _out += self._gen__new__()
-        #
-        _out += self._gen_properties()
-
-        _out += self._gen_methods_defs()
-
-        _out += self._gen_define_proxy()
-        _out += self._gen_jit_properties()
-        _out += self._gen_jit_methods_defs()
-        _out += self._gen_overload_methods()
-
-        return _out
+        return "".join(_out)
