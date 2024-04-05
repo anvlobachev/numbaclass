@@ -116,12 +116,10 @@ class MakeNumbaClass:
             self.TAB + f"return {self.structrefname}({', '.join(self.attrs_names_)})\n"
         )
 
-        # self.get_init_code = "\n".join(new_lines)
         self.get_init_code = "".join(new_lines)
         self.get_module_name = self.classname.lower() + "__nbc__"
 
     def _gen__new__(self):
-
         _args1 = ",\n".join([f"{self.TAB2}{name}" for name in self.attrs_names_])
         _args2 = ",\n".join([f"{self.TAB3}{name}" for name in self.attrs_names_])
 
