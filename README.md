@@ -143,17 +143,17 @@ Disable conversion globally via environment variable:\
 
 * Decorator expects one Python class within module.
 * Numbaclass will convert \_\_init\_\_ to wrapper function,
-which will return jitted structref instance. Use pure Python and any modules here to process data for structref inputs.
+which will return jitted structref instance. Use pure Python and any modules here to process data for inputs.
 
 * "self." attributes within \_\_init\_\_ must be assigned with Numba compatible data types or objects.
 
-* Scalar variables will be treated as constants by StructRef. To be able to update value, it's advisable to use array of one item size.
+* Scalar variable will be treated as constant by StructRef. To be able to update the value, it's advisable to use array of one item size.
 
 @numbaclass is usefull for arranging code for compute intensive, repetative operations with a state.
 
 Decorated class stays clean from additional code, which is needed using StructRef directily.
 In case of Numba's own @jitclass decorator, caching and nesting is not supported.
-While @numbaclass utilizes StructRef to cache compiled code and constuct nested classes.
+While @numbaclass utilizes StructRef to cache compiled code and allows to constuct nested classes.
 
 ## Todos
 
