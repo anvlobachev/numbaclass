@@ -29,7 +29,7 @@ def ExampleFormat(n):
     prop1[:] = get_data()
 
     prop2 = np.zeros(n, dtype=np.float64)
-    prop2 = prop1[:]
+    prop2[:] = prop1[:]
     return ExampleFormatNB(prop1, prop2)
 
 @structref.register
