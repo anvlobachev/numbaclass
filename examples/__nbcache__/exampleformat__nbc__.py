@@ -1,8 +1,8 @@
 
 
 
+
 import numpy as np
-from numbaclass import numbaclass
 
 
 
@@ -22,12 +22,14 @@ def ExampleFormat(n):
     """
 
     prop1 = np.zeros(n, dtype=np.float64)
-    prop2 = np.zeros(n, dtype=np.float64)
 
     def get_data():
         return 10
 
     prop1[:] = get_data()
+
+    prop2 = np.zeros(n, dtype=np.float64)
+    prop2 = prop1[:]
     return ExampleFormatNB(prop1, prop2)
 
 @structref.register
