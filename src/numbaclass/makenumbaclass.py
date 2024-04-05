@@ -90,37 +90,34 @@ class MakeNumbaClass:
             docstr = ""
 
         self._remove_definition(src, lines_)
+        new_lines = [f"def {self.classname}({', '.join(self.init_args_names_)}):\n"]
 
-        new_lines = []
-        new_lines.append(f"def {self.classname}({', '.join(self.init_args_names_)}):")
+        for line in lines_:
 
-        for n in range(0, len(lines_)):
-            line = lines_[n]
-
-            # if line.startswith(self.TAB):
-            #     line = line[len(self.TAB) :]
-            line = line.strip()
+            if line.startswith(self.TAB):
+                line = line[len(self.TAB) :]
 
             # Remove inline comments
             if "#" in line:
-                line = line.split("#")[0].rstrip()
+                line = line.split("#")[0].rstrip() + "\n"
 
             # Retrieve attr instance names by "self." clause
-            if "self." in line and line not in docstr:
-                _name = (
+            if "self." in line and line.strip() not in docstr:
+                attr_name = (
                     line.split("self.")[1].split("=")[0].rstrip().split("[")[0].strip()
                 )
-                if _name not in self.attrs_names_:
-                    self.attrs_names_.append(_name)
+                if attr_name not in self.attrs_names_:
+                    self.attrs_names_.append(attr_name)
                 line = line.replace("self.", "")
 
-            new_lines.append(self.TAB + line)
+            new_lines.append(line)
 
         new_lines.append(
             self.TAB + f"return {self.structrefname}({', '.join(self.attrs_names_)})\n"
         )
 
-        self.get_init_code = "\n".join(new_lines)
+        # self.get_init_code = "\n".join(new_lines)
+        self.get_init_code = "".join(new_lines)
         self.get_module_name = self.classname.lower() + "__nbc__"
 
     def _gen__new__(self):

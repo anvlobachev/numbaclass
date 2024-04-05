@@ -1,9 +1,8 @@
 
 
 
-
 import numpy as np
-
+from numbaclass import numbaclass
 
 
 
@@ -17,17 +16,17 @@ def ExampleFormat(n):
     Numbaclass will convert __init__ to wrapper function,
     which will return jitted structref instance.
     Use pure Python and any modules here to process data for structref inputs.
-    
+
     Note self. attributes have to be assigned with
     Numba compatible data types and objects.
     """
-    
+
     prop1 = np.zeros(n, dtype=np.float64)
     prop2 = np.zeros(n, dtype=np.float64)
-    
+
     def get_data():
-    return 10
-    
+        return 10
+
     prop1[:] = get_data()
     return ExampleFormatNB(prop1, prop2)
 

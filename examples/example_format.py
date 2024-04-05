@@ -5,7 +5,6 @@
 import numpy as np
 
 
-# @numbaclass
 # @numbaclass(cache=True)
 class ExampleFormat:
     def __init__(self, n):
@@ -24,7 +23,7 @@ class ExampleFormat:
         def get_data():
             return 10
 
-        self.prop1[:] = get_data()  # Property variation
+        self.prop1[:] = get_data()  # Assign to array
 
     def incr_prop1(
         self,
@@ -42,7 +41,7 @@ class ExampleFormat:
         print(self.prop1)
 
 
-# obj = ExampleFormat(4)
+obj = ExampleFormat(4)
 # obj.incr_prop1(1)
 # obj.incr_prop1(3)
 # obj.check_me()
