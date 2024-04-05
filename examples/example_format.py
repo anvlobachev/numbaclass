@@ -25,7 +25,7 @@ class ExampleFormat:
         self.prop1[:] = get_data()  # Assign to array
 
         self.prop2 = np.zeros(n, dtype=np.float64)
-        self.prop2 = self.prop1[:]
+        self.prop2[:] = self.prop1[:]
 
     def incr_prop1(
         self,
