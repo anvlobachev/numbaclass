@@ -82,3 +82,40 @@ def test_can_run_nested_structrefs():
 
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
+
+
+def test_can_mutate_from_jitted():
+
+    try:
+        from examples.example_incr import ExampleIncr
+
+        numba_cls = ExampleIncr(3)
+
+        @njit
+        def jitted_func(cls):
+            cls.incr_val = 2
+            cls.incr(0)
+            cls.incr(1)
+            cls.get_count(0)
+
+        jitted_func(numba_cls)
+
+    except Exception as e:
+        pytest.fail(f"Exception raised: {e}")
+
+
+@pytest.mark.skip(reason="Implement setters generation")
+def test_can_mutate_from_purepy():
+
+    try:
+        from examples.example_incr import ExampleIncr
+
+        numba_cls = ExampleIncr(3)
+
+        numba_cls.incr_val = 2
+        numba_cls.incr(0)
+        numba_cls.incr(1)
+        numba_cls.get_count(0)
+
+    except Exception as e:
+        pytest.fail(f"Exception raised: {e}")
