@@ -13,8 +13,10 @@ class ExampleIncr:
         self.arr_ = np.zeros(size, dtype=np.int64)
         self.arr_[:] = 3  # Arbitrary assign
 
+        self.incr_val = 1
+
     def incr(self, i):
-        self.arr_[i] += 1
+        self.arr_[i] += self.incr_val
 
     def get_count(self, i):
         return self.arr_[i]

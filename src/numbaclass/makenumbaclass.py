@@ -258,13 +258,14 @@ def ol__{name}({_args}):
         _out = (
             self.get_imports,
             self.get_init_code,
-            self._gen_preprocess_fields(),
             self._gen__new__(),
             self._gen_properties(),
             self._gen_methods_defs(),
-            self._gen_define_proxy(),
             self._gen_jit_properties(),
             self._gen_jit_methods_defs(),
+            "\n",
+            self._gen_preprocess_fields(),
+            self._gen_define_proxy(),
             self._gen_overload_methods(),
         )
 
