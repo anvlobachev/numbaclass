@@ -11,51 +11,20 @@ from numba.core import types
 from numba.experimental import structref
 from numba.core.extending import overload_method, register_jitable
 
-def ExampleFormat(n):
-    """
-    Numbaclass will convert __init__ to wrapper function,
-    which will return jitted structref instance.
-    Use pure Python and any modules here to process data for structref inputs.
 
-    Note self. attributes have to be assigned with
-    Numba compatible data types and objects.
-    """
-
-    prop1 = np.zeros(n, dtype=np.float64)
-
-    def get_data():
-        return 10
-
-    prop1[:] = get_data()
-
-    prop2 = np.zeros(n, dtype=np.float64)
-    prop2[:] = prop1[:]
-    return ExampleFormatNB(prop1, prop2)
-
-@structref.register
-class ExampleFormatNBType(types.StructRef):
-    def preprocess_fields(self, fields):
-        return tuple((name, types.unliteral(typ)) for name, typ in fields)
-
-class ExampleFormatNB(structref.StructRefProxy):
+class ExampleFormat(structref.StructRefProxy):
     def __new__(
         cls,
-        prop1,
-        prop2
+        n
     ):
         return structref.StructRefProxy.__new__(
             cls,
-            prop1,
-            prop2
+            n
         )
 
     @property
-    def prop1(self):
-        return get__prop1(self)
-
-    @property
-    def prop2(self):
-        return get__prop2(self)
+    def n(self):
+        return get__n(self)
 
     def check_me(self):
         return invoke__check_me(self)
@@ -63,22 +32,9 @@ class ExampleFormatNB(structref.StructRefProxy):
     def incr_prop1(self, val):
         return invoke__incr_prop1(self, val)
 
-structref.define_proxy(
-    ExampleFormatNB,
-    ExampleFormatNBType,
-    [
-	"prop1",
-	"prop2"
-    ],
-)
-
 @njit(cache=True)
-def get__prop1(self):
-    return self.prop1
-
-@njit(cache=True)
-def get__prop2(self):
-    return self.prop2
+def get__n(self):
+    return self.n
 
 @register_jitable
 def the__check_me(self):
@@ -101,10 +57,24 @@ def the__incr_prop1(self, val):
 def invoke__incr_prop1(self, val):
     return the__incr_prop1(self, val)
 
-@overload_method(ExampleFormatNBType, "check_me", fastmath=False)
+
+@structref.register
+class ExampleFormatType(types.StructRef):
+    def preprocess_fields(self, fields):
+        return tuple((name, types.unliteral(typ)) for name, typ in fields)
+
+structref.define_proxy(
+    ExampleFormat,
+    ExampleFormatType,
+    [
+	"n"
+    ],
+)
+
+@overload_method(ExampleFormatType, "check_me", fastmath=False)
 def ol__check_me(self):
     return the__check_me
 
-@overload_method(ExampleFormatNBType, "incr_prop1", fastmath=False)
+@overload_method(ExampleFormatType, "incr_prop1", fastmath=False)
 def ol__incr_prop1(self, val):
     return the__incr_prop1
