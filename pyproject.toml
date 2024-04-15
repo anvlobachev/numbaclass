@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "numbaclass"
-version = "0.1.1a"
+version = "0.1.2a"
 description = 'Convert Python class to Numba aware class, using StructRef.'
 readme = "README.md"
 requires-python = ">=3.8"
