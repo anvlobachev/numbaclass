@@ -4,7 +4,9 @@ import inspect
 class MakeNumbaClass:
     """ """
 
-    NBPREFIX = "NB"
+    # NBPREFIX = "NB"
+
+    NBPREFIX = ""
     TAB = "    "
     TAB2 = TAB + TAB
     TAB3 = TAB + TAB + TAB
@@ -14,24 +16,25 @@ class MakeNumbaClass:
         self.cache = cache
 
         self.classname = cls.__name__
-        self.structrefname = cls.__name__ + "NB"
+        self.structrefname = cls.__name__ + self.NBPREFIX
         self.init_args_names_ = []
         self.attrs_names_ = []
 
         self.methods_parts_ = []
 
-        self.get_module_name = ""
-
         self.get_imports = ""
-        self.get_init_code = ""
         self.get_methods_code_ = []
+
+        self.get_module_name = self.classname.lower() + "__nbc__"
 
         self.src_module = inspect.getmodule(cls)
         self._gen_imports(cls)
 
         for itm in inspect.getmembers(cls):
             if "__init__" in itm[0]:
-                self._gen_init(itm[1])
+                #  Don't include 'self' argument, skip first item [1:]
+                self.attrs_names_ = list(inspect.getfullargspec(itm[1]).args[1:])
+
             if "__" not in itm[0]:
                 self._parse_method(itm[1])
 
@@ -75,49 +78,6 @@ class MakeNumbaClass:
             # End of difinition
             if ":\n" in line:
                 break
-
-    def _gen_init(self, src):
-        """
-        Takes class __init__ method source code as argument.
-        Creates function which inits inputs and
-        returns Numba StructRef object.
-        """
-        #  Don't include 'self' argument, skip first item [1:]
-        self.init_args_names_ = list(inspect.getfullargspec(src).args[1:])
-        lines_ = inspect.getsourcelines(src)[0]  # We need only lines of code
-        docstr = inspect.getdoc(src)
-        if docstr is None:
-            docstr = ""
-
-        self._remove_definition(src, lines_)
-        new_lines = [f"def {self.classname}({', '.join(self.init_args_names_)}):\n"]
-
-        for line in lines_:
-
-            if line.startswith(self.TAB):
-                line = line[len(self.TAB) :]
-
-            # Remove inline comments
-            if "#" in line:
-                line = line.split("#")[0].rstrip() + "\n"
-
-            # Retrieve attr instance names by "self." clause
-            if "self." in line and line.strip() not in docstr:
-                attr_name = (
-                    line.split("self.")[1].split("=")[0].rstrip().split("[")[0].strip()
-                )
-                if attr_name not in self.attrs_names_:
-                    self.attrs_names_.append(attr_name)
-                line = line.replace("self.", "")
-
-            new_lines.append(line)
-
-        new_lines.append(
-            self.TAB + f"return {self.structrefname}({', '.join(self.attrs_names_)})\n"
-        )
-
-        self.get_init_code = "".join(new_lines)
-        self.get_module_name = self.classname.lower() + "__nbc__"
 
     def _gen__new__(self):
         _args1 = ",\n".join([f"{self.TAB2}{name}" for name in self.attrs_names_])
@@ -257,7 +217,6 @@ def ol__{name}({_args}):
 
         _out = (
             self.get_imports,
-            self.get_init_code,
             self._gen__new__(),
             self._gen_properties(),
             self._gen_methods_defs(),
