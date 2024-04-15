@@ -142,8 +142,6 @@ Disable conversion globally via environment variable:\
 ## Use Guides and Tips
 
 * Decorator expects one Python class within module.
-* ~~Numbaclass will convert \_\_init\_\_ to wrapper function,
-which will return jitted structref instance. Use pure Python and any modules here to process data for inputs.~~ Dropping this behavior
 
 * "self." attributes within \_\_init\_\_ must be assigned with Numba compatible data types or objects.
 

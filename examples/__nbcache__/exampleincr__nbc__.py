@@ -7,34 +7,26 @@ from numba.core import types
 from numba.experimental import structref
 from numba.core.extending import overload_method, register_jitable
 
-def ExampleIncr(size):
-    """
-    __init__ will be converted to wrapper function,
-    which will return jitted structref instance.
-    Use any pure Python here.
-    """
-    arr_ = np.zeros(size, dtype=np.int64)
-    arr_[:] = 3
-    return ExampleIncrNB(arr_)
 
-@structref.register
-class ExampleIncrNBType(types.StructRef):
-    def preprocess_fields(self, fields):
-        return tuple((name, types.unliteral(typ)) for name, typ in fields)
-
-class ExampleIncrNB(structref.StructRefProxy):
+class ExampleIncr(structref.StructRefProxy):
     def __new__(
         cls,
-        arr_
+        arr_,
+        incr_val
     ):
         return structref.StructRefProxy.__new__(
             cls,
-            arr_
+            arr_,
+            incr_val
         )
 
     @property
     def arr_(self):
         return get__arr_(self)
+
+    @property
+    def incr_val(self):
+        return get__incr_val(self)
 
     def get_count(self, i):
         return invoke__get_count(self, i)
@@ -42,17 +34,13 @@ class ExampleIncrNB(structref.StructRefProxy):
     def incr(self, i):
         return invoke__incr(self, i)
 
-structref.define_proxy(
-    ExampleIncrNB,
-    ExampleIncrNBType,
-    [
-	"arr_"
-    ],
-)
-
 @njit(cache=True)
 def get__arr_(self):
     return self.arr_
+
+@njit(cache=True)
+def get__incr_val(self):
+    return self.incr_val
 
 @register_jitable
 def the__get_count(self, i):
@@ -65,17 +53,32 @@ def invoke__get_count(self, i):
 
 @register_jitable
 def the__incr(self, i):
-    self.arr_[i] += 1
+    self.arr_[i] += self.incr_val
 
 
 @njit(cache=True)
 def invoke__incr(self, i):
     return the__incr(self, i)
 
-@overload_method(ExampleIncrNBType, "get_count", fastmath=False)
+
+@structref.register
+class ExampleIncrType(types.StructRef):
+    def preprocess_fields(self, fields):
+        return tuple((name, types.unliteral(typ)) for name, typ in fields)
+
+structref.define_proxy(
+    ExampleIncr,
+    ExampleIncrType,
+    [
+	"arr_",
+	"incr_val"
+    ],
+)
+
+@overload_method(ExampleIncrType, "get_count", fastmath=False)
 def ol__get_count(self, i):
     return the__get_count
 
-@overload_method(ExampleIncrNBType, "incr", fastmath=False)
+@overload_method(ExampleIncrType, "incr", fastmath=False)
 def ol__incr(self, i):
     return the__incr
