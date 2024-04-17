@@ -150,6 +150,7 @@ While @numbaclass utilizes StructRef to cache compiled code and allows to constu
 
 ## Todos
 
+* Add setters
 * Move from Alfa to Beta release
 * Check changes of source vs cached before generate.
 * Implement literal_unroll mock.
