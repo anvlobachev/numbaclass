@@ -5,27 +5,10 @@
 import numpy as np
 
 
-# @numbaclass(cache=True)
 class ExampleFormat:
-    def __init__(self, n):
-        """
-        Numbaclass will convert __init__ to wrapper function,
-        which will return jitted structref instance.
-        Use pure Python and any modules here to process data for structref inputs.
+    def __init__(self, prop1):
+        self.prop1 = prop1
 
-        Note self. attributes have to be assigned with
-        Numba compatible data types and objects.
-        """
-
-        self.prop1 = np.zeros(n, dtype=np.float64)  # self. in comment
-
-        def get_data():
-            return 10
-
-        self.prop1[:] = get_data()  # Assign to array
-
-        self.prop2 = np.zeros(n, dtype=np.float64)
-        self.prop2[:] = self.prop1[:]
 
     def incr_prop1(
         self,
@@ -43,8 +26,25 @@ class ExampleFormat:
         print(self.prop1)
 
 
-obj = ExampleFormat(4)
-# obj.incr_prop1(1)
+def init(n):
+    """
+    This is init wrapper for jittable classes.
+    Use it if pure python routines is needed to prepare inputs for jitted class.
+
+    If jitted class is initialized inside other jitted function 
+    use decorated (by @numbaclass) class directly.
+
+    """
+
+    prop1 = np.zeros(n, dtype=np.float64)
+    
+    obj = ExampleFormat(prop1)
+    
+    return obj
+
+
+obj = ExampleFormat(np.zeros(5, dtype=np.float64))
+obj.incr_prop1(1)
 # obj.incr_prop1(3)
 # obj.check_me()
 
