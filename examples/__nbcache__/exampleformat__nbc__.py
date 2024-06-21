@@ -1,9 +1,8 @@
 
 
 
-
+from numbaclass import numbaclass
 import numpy as np
-
 
 
 from numba import njit
@@ -15,16 +14,16 @@ from numba.core.extending import overload_method, register_jitable
 class ExampleFormat(structref.StructRefProxy):
     def __new__(
         cls,
-        n
+        prop1
     ):
         return structref.StructRefProxy.__new__(
             cls,
-            n
+            prop1
         )
 
     @property
-    def n(self):
-        return get__n(self)
+    def prop1(self):
+        return get__prop1(self)
 
     def check_me(self):
         return invoke__check_me(self)
@@ -33,8 +32,8 @@ class ExampleFormat(structref.StructRefProxy):
         return invoke__incr_prop1(self, val)
 
 @njit(cache=True)
-def get__n(self):
-    return self.n
+def get__prop1(self):
+    return self.prop1
 
 @register_jitable
 def the__check_me(self):
@@ -67,7 +66,7 @@ structref.define_proxy(
     ExampleFormat,
     ExampleFormatType,
     [
-	"n"
+	"prop1"
     ],
 )
 
