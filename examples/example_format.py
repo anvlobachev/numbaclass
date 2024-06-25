@@ -4,11 +4,9 @@
 # from numbaclass import numbaclass
 import numpy as np
 
-
 class ExampleFormat:
-    def __init__(self, prop1):
-        self.prop1 = prop1
-
+    def __init__(self, arr_prop1):
+        self.arr_prop1 = arr_prop1
 
     def incr_prop1(
         self,
@@ -19,11 +17,11 @@ class ExampleFormat:
         """
         Doc
         """
-        self.prop1[:] += val
+        self.arr_prop1[:] += val
 
     # No type hints
     def check_me(self):
-        print(self.prop1)
+        print(self.arr_prop1)
 
 
 def init(n):
@@ -37,9 +35,7 @@ def init(n):
     """
 
     prop1 = np.zeros(n, dtype=np.float64)
-    
     obj = ExampleFormat(prop1)
-    
     return obj
 
 
