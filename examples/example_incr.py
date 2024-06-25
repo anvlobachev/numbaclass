@@ -2,24 +2,25 @@ import numpy as np
 from numbaclass import numbaclass
 
 
-@numbaclass(cache=True)
+# @numbaclass(cache=True)
 class ExampleIncr:
-    def __init__(self, arr_, incr_val):
+    def __init__(self, arr_):
         self.arr_ = arr_
-        self.incr_val = incr_val
 
-    def incr(self, i):
-        self.arr_[i] += self.incr_val
+    def incr(self, i, val):
+        self.arr_[i] += val
 
     def get_count(self, i):
         return self.arr_[i]
 
 
 def init(size):
+    """
+    size: Provide size of one-dim array to store counts
+    """
     arr_ = np.zeros(size, dtype=np.int64)
     arr_[:] = 3
-    incr_val = 1
-    return ExampleIncr(arr_, incr_val)
+    return ExampleIncr(arr_)
 
 
 if __name__ == "__main__":
