@@ -4,12 +4,13 @@
 # from numbaclass import numbaclass
 import numpy as np
 
-class ExampleFormat:
-    def __init__(self, arr_prop1):
-        self.arr_prop1 = arr_prop1
+class ExampleIncrTestfrmt:
+    def __init__(self, arr_):
+        self.arr_ = arr_
 
-    def incr_prop1(
+    def incr(
         self,
+        i: int,
         val: int,
         # Multiline args
         # Multiline args
@@ -17,11 +18,11 @@ class ExampleFormat:
         """
         Doc
         """
-        self.arr_prop1[:] += val
+        self.arr_[i] += val
 
     # No type hints
     def check_me(self):
-        print(self.arr_prop1)
+        print(self.arr_)
 
 
 def init(n):
@@ -35,12 +36,12 @@ def init(n):
     """
 
     prop1 = np.zeros(n, dtype=np.float64)
-    obj = ExampleFormat(prop1)
+    obj = ExampleIncrTestfrmt(prop1)
     return obj
 
 
-obj = ExampleFormat(np.zeros(5, dtype=np.float64))
-obj.incr_prop1(1)
+# obj = ExampleFormat(np.zeros(5, dtype=np.float64))
+# obj.incr_prop1(1)
 # obj.incr_prop1(3)
 # obj.check_me()
 

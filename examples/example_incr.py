@@ -16,6 +16,7 @@ class ExampleIncr:
 
 def init(size):
     """
+    Pure python init helper function.
     size: Provide size of one-dim array to store counts
     """
     arr_ = np.zeros(size, dtype=np.int64)
@@ -25,6 +26,6 @@ def init(size):
 
 if __name__ == "__main__":
     obj = init(3)
-    obj.incr(0)
-    obj.incr(0)
+    obj.incr(0, 1)
+    obj.incr(0, 1)
     print(obj.get_count(0))

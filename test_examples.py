@@ -1,14 +1,15 @@
 import pytest
 from numba import njit
+import numpy as np
 
-@pytest.mark.skip(reason="temporary")
-def test_pure_python_instance_sanity_check():
+# @pytest.mark.skip(reason="temporary")
+def test_example_incr_testfrmt_pure_python():
 
     try:
-        from examples.example_format import ExampleFormat
+        from examples.example_incr_testfrmt import ExampleIncrTestfrmt
 
-        purepy_cls = ExampleFormat(5)
-        purepy_cls.incr_prop1(5)
+        purepy_cls = ExampleIncrTestfrmt(np.zeros(5, dtype=np.float64))
+        purepy_cls.incr(0, 1)
         purepy_cls.check_me()
 
     except Exception as e:
@@ -16,20 +17,20 @@ def test_pure_python_instance_sanity_check():
 
 
 
-def test_exampleformat_converted_without_typos():
+def test_example_incr_testfrmt_converted_without_typos():
 
-    from examples.example_format import ExampleFormat
+    from examples.example_incr_testfrmt import ExampleIncrTestfrmt
 
     try:
         from numbaclass import numbaclass
 
-        ExampleClassNB = numbaclass(_cls=ExampleFormat, cache=True)
+        ExampleClassNB = numbaclass(_cls=ExampleIncrTestfrmt, cache=True)
         numba_cls = ExampleClassNB(5)
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
 
 
-def test_exampleformat_can_run_inside_jitted_function():
+def test_example_incr_testfrmt_can_run_inside_jitted_function():
     """
     Note, instance object ( numba_cls ) created
     outside jitted function.
@@ -37,10 +38,10 @@ def test_exampleformat_can_run_inside_jitted_function():
 
     import numpy as np
     from numbaclass import numbaclass
-    from examples.example_format import ExampleFormat
+    from examples.example_incr_testfrmt import ExampleIncrTestfrmt
 
     try:
-        ExampleClassNB = numbaclass(_cls=ExampleFormat, cache=True)
+        ExampleClassNB = numbaclass(_cls=ExampleIncrTestfrmt, cache=True)
         numba_cls = ExampleClassNB(
                                      np.zeros(5, dtype=np.float64 )
                                    )
@@ -48,7 +49,7 @@ def test_exampleformat_can_run_inside_jitted_function():
         @njit
         def run_in_jit(numba_cls):
 
-            numba_cls.incr_prop1(5)
+            numba_cls.incr(0, 1)
             numba_cls.check_me()
 
         run_in_jit(numba_cls)
@@ -58,7 +59,7 @@ def test_exampleformat_can_run_inside_jitted_function():
 
 
 # @pytest.mark.skip(reason="temporary")
-def test_example_incr_can_run():
+def test_example_incr_pure_python():
     try:
         from examples import example_incr
 
@@ -69,6 +70,20 @@ def test_example_incr_can_run():
 
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
+
+
+def test_example_incr_converted_without_typos():
+
+    from examples.example_incr import ExampleIncr
+
+    try:
+        from numbaclass import numbaclass
+
+        ExampleClassNB = numbaclass(_cls=ExampleIncr, cache=True)
+        numba_cls = ExampleClassNB(5)
+    except Exception as e:
+        pytest.fail(f"Exception raised: {e}")
+
 
 
 @pytest.mark.skip(reason="temporary")
