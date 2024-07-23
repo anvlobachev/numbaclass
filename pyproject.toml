@@ -9,7 +9,7 @@ description = 'Convert Python class to Numba aware class, using StructRef.'
 authors = [{ name = "Anton Lobachev", email = "anvlobachev@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.8"
-license = "MIT"
+license = {file = "LICENSE"}
 keywords = []
 
 classifiers = [

@@ -7,6 +7,8 @@ dist/
 .coverage
 .coverage.*
 
+*.egg-info
+
 # Not ignore for demonstration purposes:
 # __nbcache__/
 # *__nbc__.py
