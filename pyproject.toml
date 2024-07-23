@@ -1,16 +1,17 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "numbaclass"
 version = "0.1.2a"
 description = 'Convert Python class to Numba aware class, using StructRef.'
+authors = [{ name = "Anton Lobachev", email = "anvlobachev@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.8"
-license = "MIT"
+license = {file = "LICENSE"}
 keywords = []
-authors = [{ name = "Anton Lobachev", email = "anvlobachev@gmail.com" }]
+
 classifiers = [
   "Development Status :: 3 - Alpha",
   # "Development Status :: 4 - Beta",
@@ -23,32 +24,10 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 
 ]
+
 dependencies = ["numba"]
 
 [project.urls]
 Documentation = "https://github.com/anvlobachev/numbaclass#readme"
 Issues = "https://github.com/anvlobachev/numbaclass/issues"
 Source = "https://github.com/anvlobachev/numbaclass"
-
-
-[tool.hatch.envs.default]
-dependencies = ["pytest"]
-
-[tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
-
-
-[[tool.hatch.envs.all.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
-
-[tool.hatch.envs.types]
-dependencies = ["mypy>=1.0.0"]
-[tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/numbaclass tests}"
-
-
-[tool.hatch.build.targets.sdist]
-exclude = ["/.github", "/examples", "test_examples.py"]
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/numbaclass"]
