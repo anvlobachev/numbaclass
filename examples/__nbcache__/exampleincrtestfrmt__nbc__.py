@@ -1,7 +1,8 @@
+
+
+
+
 import numpy as np
-from numbaclass import numbaclass
-
-
 
 from numba import njit
 from numba.core import types
@@ -9,7 +10,7 @@ from numba.experimental import structref
 from numba.core.extending import overload_method, register_jitable
 
 
-class ExampleIncr(structref.StructRefProxy):
+class ExampleIncrTestfrmt(structref.StructRefProxy):
     def __new__(
         cls,
         arr_
@@ -23,8 +24,8 @@ class ExampleIncr(structref.StructRefProxy):
     def arr_(self):
         return get__arr_(self)
 
-    def get_count(self, i):
-        return invoke__get_count(self, i)
+    def check_me(self):
+        return invoke__check_me(self)
 
     def incr(self, i, val):
         return invoke__incr(self, i, val)
@@ -34,16 +35,19 @@ def get__arr_(self):
     return self.arr_
 
 @register_jitable
-def the__get_count(self, i):
-    return self.arr_[i]
+def the__check_me(self):
+    print(self.arr_)
 
 
 @njit(cache=True)
-def invoke__get_count(self, i):
-    return the__get_count(self, i)
+def invoke__check_me(self):
+    return the__check_me(self)
 
 @register_jitable
 def the__incr(self, i, val):
+    """
+    Doc
+    """
     self.arr_[i] += val
 
 
@@ -53,22 +57,22 @@ def invoke__incr(self, i, val):
 
 
 @structref.register
-class ExampleIncrType(types.StructRef):
+class ExampleIncrTestfrmtType(types.StructRef):
     def preprocess_fields(self, fields):
         return tuple((name, types.unliteral(typ)) for name, typ in fields)
 
 structref.define_proxy(
-    ExampleIncr,
-    ExampleIncrType,
+    ExampleIncrTestfrmt,
+    ExampleIncrTestfrmtType,
     [
 	"arr_"
     ],
 )
 
-@overload_method(ExampleIncrType, "get_count", fastmath=False)
-def ol__get_count(self, i):
-    return the__get_count
+@overload_method(ExampleIncrTestfrmtType, "check_me", fastmath=False)
+def ol__check_me(self):
+    return the__check_me
 
-@overload_method(ExampleIncrType, "incr", fastmath=False)
+@overload_method(ExampleIncrTestfrmtType, "incr", fastmath=False)
 def ol__incr(self, i, val):
     return the__incr

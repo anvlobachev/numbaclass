@@ -1,9 +1,8 @@
 
 
 
-from numbaclass import numbaclass
-import numpy as np
 
+import numpy as np
 
 from numba import njit
 from numba.core import types
@@ -14,30 +13,30 @@ from numba.core.extending import overload_method, register_jitable
 class ExampleFormat(structref.StructRefProxy):
     def __new__(
         cls,
-        prop1
+        arr_
     ):
         return structref.StructRefProxy.__new__(
             cls,
-            prop1
+            arr_
         )
 
     @property
-    def prop1(self):
-        return get__prop1(self)
+    def arr_(self):
+        return get__arr_(self)
 
     def check_me(self):
         return invoke__check_me(self)
 
-    def incr_prop1(self, val):
-        return invoke__incr_prop1(self, val)
+    def incr(self, i, val):
+        return invoke__incr(self, i, val)
 
 @njit(cache=True)
-def get__prop1(self):
-    return self.prop1
+def get__arr_(self):
+    return self.arr_
 
 @register_jitable
 def the__check_me(self):
-    print(self.prop1)
+    print(self.arr_)
 
 
 @njit(cache=True)
@@ -45,16 +44,16 @@ def invoke__check_me(self):
     return the__check_me(self)
 
 @register_jitable
-def the__incr_prop1(self, val):
+def the__incr(self, i, val):
     """
     Doc
     """
-    self.prop1[:] += val
+    self.arr_[i] += val
 
 
 @njit(cache=True)
-def invoke__incr_prop1(self, val):
-    return the__incr_prop1(self, val)
+def invoke__incr(self, i, val):
+    return the__incr(self, i, val)
 
 
 @structref.register
@@ -66,7 +65,7 @@ structref.define_proxy(
     ExampleFormat,
     ExampleFormatType,
     [
-	"prop1"
+	"arr_"
     ],
 )
 
@@ -74,6 +73,6 @@ structref.define_proxy(
 def ol__check_me(self):
     return the__check_me
 
-@overload_method(ExampleFormatType, "incr_prop1", fastmath=False)
-def ol__incr_prop1(self, val):
-    return the__incr_prop1
+@overload_method(ExampleFormatType, "incr", fastmath=False)
+def ol__incr(self, i, val):
+    return the__incr
