@@ -2,7 +2,7 @@ import numpy as np
 from numbaclass import numbaclass
 
 
-@numbaclass(cache=True)
+# @numbaclass(cache=True)
 class ExampleIncr:
     def __init__(self, arr_, total_count):
         self.arr_ = arr_
