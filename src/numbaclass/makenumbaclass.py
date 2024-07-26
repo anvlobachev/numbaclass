@@ -126,7 +126,18 @@ def get__{name}(self):
     def {name}(self, value):
         return set__{name}(self, value)\n"""
         return _out
-        
+
+
+    def _gen_jit_setters(self):
+        if not self._MAKE_SETTERS:
+            return ""
+        _out = ""
+        for name in self.attrs_names_:
+            _out += f"""
+@njit(cache={self.cache})
+def set__{name}(self, value):
+    self.{name}=value\n"""
+        return _out    
 
 
     def _parse_method(self, src):
@@ -239,6 +250,8 @@ def ol__{name}({_args}):
             self._gen_properties(),
             self._gen_setters(),   # Issue #15
             self._gen_methods_defs(),
+            # 
+            self._gen_jit_setters(),
             self._gen_jit_properties(),
             self._gen_jit_methods_defs(),
             "\n",
