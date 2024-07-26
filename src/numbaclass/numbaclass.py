@@ -7,7 +7,7 @@ import os
 import sys
 
 # from numbaclass.makenumbaclass import MakeNumbaClass
-from .makenumbaclass import MakeNumbaClass
+from numbaclass.makenumbaclass import MakeNumbaClass
 from importlib.machinery import SourceFileLoader
 
 from importlib.util import spec_from_file_location, module_from_spec

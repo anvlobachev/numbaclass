@@ -2,11 +2,15 @@ import numpy as np
 from numbaclass import numbaclass
 
 
-
 from numba import njit
 from numba.core import types
 from numba.experimental import structref
 from numba.core.extending import overload_method, register_jitable
+
+"""
+Test setters
+
+"""
 
 
 class ExampleIncr(structref.StructRefProxy):
@@ -29,13 +33,14 @@ class ExampleIncr(structref.StructRefProxy):
     def total_count(self):
         return get__total_count(self)
 
-    @arr_.setter
-    def arr_(self, value):
-        return set__arr_(self, value)
+    # ----------------------------
 
+    # Explicit setter wrapper
     @total_count.setter
     def total_count(self, value):
         return set__total_count(self, value)
+    # ----------------------------
+
 
     def get_count(self, i):
         return invoke__get_count(self, i)
@@ -43,13 +48,13 @@ class ExampleIncr(structref.StructRefProxy):
     def incr(self, i, val):
         return invoke__incr(self, i, val)
 
-@njit(cache=True)
-def set__arr_(self, value):
-    self.arr_=value
-
+# ----------------------------
+# Explicit setter action
 @njit(cache=True)
 def set__total_count(self, value):
-    self.total_count=value
+    self.total_count = value
+# ----------------------------
+
 
 @njit(cache=True)
 def get__arr_(self):
@@ -100,3 +105,23 @@ def ol__get_count(self, i):
 @overload_method(ExampleIncrType, "incr", fastmath=False)
 def ol__incr(self, i, val):
     return the__incr
+
+
+
+if __name__ == "__main__":
+
+    arr_ = np.zeros(3, dtype=np.int64)
+    obj = ExampleIncr(arr_, 0)
+
+    # @njit
+    def wrapper(obj):
+        obj.incr(0, 1)
+        obj.incr(0, 1)
+        print(obj.get_count(0))
+        print("obj.total_count: ", obj.total_count )
+        # reset total_count
+        
+        obj.total_count = 0
+        print("obj.total_count: ", obj.total_count )
+
+    wrapper(obj)
