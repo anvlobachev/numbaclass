@@ -13,6 +13,8 @@ class MakeNumbaClass:
 
     def __init__(self, cls, cache):
 
+        self._MAKE_SETTERS = True
+
         self.cache = cache
 
         self.classname = cls.__name__
@@ -110,6 +112,22 @@ class {self.classname}{self.NBPREFIX}(structref.StructRefProxy):
 def get__{name}(self):
     return self.{name}\n"""
         return _out
+
+
+    # TODO Issue #15
+    #  
+    def _gen_setters(self):
+        if not self._MAKE_SETTERS:
+            return ""
+        _out = ""
+        for name in self.attrs_names_:
+            _out += f"""
+    @{name}.setter
+    def {name}(self, value):
+        return set__{name}(self, value)\n"""
+        return _out
+        
+
 
     def _parse_method(self, src):
         """
@@ -219,6 +237,7 @@ def ol__{name}({_args}):
             self.get_imports,
             self._gen__new__(),
             self._gen_properties(),
+            self._gen_setters(),   # Issue #15
             self._gen_methods_defs(),
             self._gen_jit_properties(),
             self._gen_jit_methods_defs(),
