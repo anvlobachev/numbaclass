@@ -33,11 +33,28 @@ class ExampleIncr(structref.StructRefProxy):
     def total_count(self):
         return get__total_count(self)
 
+    # ----------------------------
+
+    # Explicit setter wrapper
+    @total_count.setter
+    def total_count(self, value):
+        return set__total_count(self, value)
+    # ----------------------------
+
+
     def get_count(self, i):
         return invoke__get_count(self, i)
 
     def incr(self, i, val):
         return invoke__incr(self, i, val)
+
+# ----------------------------
+# Explicit setter action
+@njit(cache=True)
+def set__total_count(self, value):
+    self.total_count = value
+# ----------------------------
+
 
 @njit(cache=True)
 def get__arr_(self):
@@ -96,11 +113,15 @@ if __name__ == "__main__":
     arr_ = np.zeros(3, dtype=np.int64)
     obj = ExampleIncr(arr_, 0)
 
-    obj.incr(0, 1)
-    obj.incr(0, 1)
-    print(obj.get_count(0))
-    print("obj.total_count: ", obj.total_count )
-    # reset total_count
-    
-    # obj.total_count = 0
-    print("obj.total_count: ", obj.total_count )
+    # @njit
+    def wrapper(obj):
+        obj.incr(0, 1)
+        obj.incr(0, 1)
+        print(obj.get_count(0))
+        print("obj.total_count: ", obj.total_count )
+        # reset total_count
+        
+        obj.total_count = 0
+        print("obj.total_count: ", obj.total_count )
+
+    wrapper(obj)
