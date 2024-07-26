@@ -80,7 +80,7 @@ def test_example_incr_converted_without_typos():
         from numbaclass import numbaclass
 
         ExampleClassNB = numbaclass(_cls=ExampleIncr, cache=True)
-        numba_cls = ExampleClassNB(5)
+        numba_cls = ExampleClassNB(np.zeros(5, dtype=np.int64), 0)
     except Exception as e:
         pytest.fail(f"Exception raised: {e}")
 
