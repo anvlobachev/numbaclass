@@ -12,16 +12,30 @@ from numba.core.extending import overload_method, register_jitable
 class ExampleIncr(structref.StructRefProxy):
     def __new__(
         cls,
-        arr_
+        arr_,
+        total_count
     ):
         return structref.StructRefProxy.__new__(
             cls,
-            arr_
+            arr_,
+            total_count
         )
 
     @property
     def arr_(self):
         return get__arr_(self)
+
+    @property
+    def total_count(self):
+        return get__total_count(self)
+
+    @arr_.setter
+    def arr_(self, value):
+        return set__arr_(self, value)
+
+    @total_count.setter
+    def total_count(self, value):
+        return set__total_count(self, value)
 
     def get_count(self, i):
         return invoke__get_count(self, i)
@@ -30,8 +44,20 @@ class ExampleIncr(structref.StructRefProxy):
         return invoke__incr(self, i, val)
 
 @njit(cache=True)
+def set__arr_(self, value):
+    self.arr_=value
+
+@njit(cache=True)
+def set__total_count(self, value):
+    self.total_count=value
+
+@njit(cache=True)
 def get__arr_(self):
     return self.arr_
+
+@njit(cache=True)
+def get__total_count(self):
+    return self.total_count
 
 @register_jitable
 def the__get_count(self, i):
@@ -45,6 +71,7 @@ def invoke__get_count(self, i):
 @register_jitable
 def the__incr(self, i, val):
     self.arr_[i] += val
+    self.total_count += val
 
 
 @njit(cache=True)
@@ -61,7 +88,8 @@ structref.define_proxy(
     ExampleIncr,
     ExampleIncrType,
     [
-	"arr_"
+	"arr_",
+	"total_count"
     ],
 )
 

@@ -24,11 +24,19 @@ class ExampleIncrTestfrmt(structref.StructRefProxy):
     def arr_(self):
         return get__arr_(self)
 
+    @arr_.setter
+    def arr_(self, value):
+        return set__arr_(self, value)
+
     def check_me(self):
         return invoke__check_me(self)
 
     def incr(self, i, val):
         return invoke__incr(self, i, val)
+
+@njit(cache=True)
+def set__arr_(self, value):
+    self.arr_=value
 
 @njit(cache=True)
 def get__arr_(self):
